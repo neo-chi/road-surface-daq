@@ -15,4 +15,9 @@ struct Time {
   uint8_t second;
 };
 
+struct Datetime {
+  Date date;
+  Time time;
+};
+
 #endif
