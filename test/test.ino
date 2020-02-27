@@ -65,7 +65,7 @@ void setup() {
   Serial.println();
 
   // Print formatted travel.
-  Impact travel = {datetime, location , false};
+  Travel travel = {datetime, location , false};
   char formatted_travel_string[80];
   Serial.println("Formatting travel...");
   FormattedImpact(travel, formatted_travel_string);
@@ -88,7 +88,17 @@ void setup() {
 }
 
 void loop() {
+}
 
+void LogRead(fs::FS &fs, const char* path) {
+  const bool file_exists = fs.exists(path);
+  if (file_exists) {
+    File log_file = fs.open(path);
+    while(log_file.available()) {
+      Serial.println(log_file.read());
+    }
+    log_file.close();
+  }
 }
 
 void LogWrite(fs::FS &fs, const char* path, char* message) {
