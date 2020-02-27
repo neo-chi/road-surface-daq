@@ -4,25 +4,31 @@
 #include "Arduino.h"
 
 struct Date {
-  uint16_t year;
-  uint8_t month;
-  uint8_t day;
+  const uint16_t year;
+  const uint8_t month;
+  const uint8_t day;
 };
 
 struct Time {
-  uint8_t hour;
-  uint8_t minute;
-  uint8_t second;
+  const uint8_t hour;
+  const uint8_t minute;
+  const uint8_t second;
 };
 
 struct Datetime {
-  Date date;
-  Time time;
+  const Date date;
+  const Time time;
 };
 
 struct Location {
-  float latitude;
-  float longitude;
+  const float latitude;
+  const float longitude;
+};
+
+struct Impact {
+  const Datetime datetime;
+  const Location location;
+  const bool is_pothole;
 };
 
 #endif

@@ -47,29 +47,61 @@ void setup() {
   Serial.println(formatted_location_string);
   Serial.println("Formatted location print success!");
   Serial.println();
+
+  // Print formatted impact.
+  Impact impact = {datetime, location , true};
+  char formatted_impact_string[80];
+  Serial.println("Formatting impact...");
+  FormattedImpact(impact, formatted_impact_string);
+  Serial.println("Impact formatted...");
+  Serial.println("Printing formatted impact..");
+  Serial.println(formatted_impact_string);
+  Serial.println("Formatted impact print success!");
+  Serial.println();
 }
 
 void loop() {
 
 }
 
-void FormattedLocation(const Location& location, char* out) {
-  sprintf(out, "%0.6lf,%0.6lf", location.latitude, location.longitude);
+int bytes_added(int result_of_sprintf) {
+  if (result_of_sprintf > 0) {
+    return result_of_sprintf;
+  } else {
+    return 0;
+  }
 }
 
-void FormattedDatetime(const Datetime& datetime, char* out) {
-  sprintf(out, "%04d-%02d-%02d %02d:%02d:%02d", datetime.date.year,
-                                                datetime.date.month,
-                                                datetime.date.day,
-                                                datetime.time.hour,
-                                                datetime.time.minute,
-                                                datetime.time.second);
+int FormattedImpact(const Impact& impact, char* out) {
+  int length = 0;
+  length += FormattedDatetime(impact.datetime, out + length);
+  length += bytes_added(sprintf(out + length, ","));
+  length += FormattedLocation(impact.location, out + length);
+  length += bytes_added(sprintf(out + length, ",%d", impact.is_pothole));
+  return length;
 }
 
-void FormattedDate(const Date& date, char* out) {
-  sprintf(out, "%04d-%02d-%02d", date.year, date.month, date.day);
+int FormattedLocation(const Location& location, char* out) {
+  const int bytes_added = sprintf(out, "%0.6lf,%0.6lf", location.latitude, location.longitude);
+  return bytes_added;
 }
 
-void FormattedTime(const Time& time, char* out) {
-  sprintf(out, "%02d:%02d:%02d", time.hour, time.minute, time.second);
+int FormattedDatetime(const Datetime& datetime, char* out) {
+  const int bytes_added = sprintf(out, "%04d-%02d-%02d %02d:%02d:%02d", datetime.date.year,
+                                                                        datetime.date.month,
+                                                                        datetime.date.day,
+                                                                        datetime.time.hour,
+                                                                        datetime.time.minute,
+                                                                        datetime.time.second);
+  return bytes_added;
+}
+
+int FormattedDate(const Date& date, char* out) {
+  const int bytes_added = sprintf(out, "%04d-%02d-%02d", date.year, date.month, date.day);
+  return bytes_added;
+}
+
+int FormattedTime(const Time& time, char* out) {
+  const int bytes_added = sprintf(out, "%02d:%02d:%02d", time.hour, time.minute, time.second);
+  return bytes_added;
 }
