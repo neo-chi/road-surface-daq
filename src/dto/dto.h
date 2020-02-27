@@ -9,4 +9,10 @@ struct Date {
   uint8_t day;
 };
 
+struct Time {
+  uint8_t hour;
+  uint8_t minute;
+  uint8_t second;
+};
+
 #endif
