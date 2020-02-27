@@ -76,14 +76,22 @@ void setup() {
   Serial.println("Formatted travel print success!");
   Serial.println();
 
+  // Print formatted Impact structure upload string.
   char post[512];
   FormatImpactUpload(impact, post);
   Serial.println("Formatting impact upload string...");
   Serial.println("Printing formatted impact upload string..");
   Serial.println(post);
   Serial.println();
-  Serial.printf("\n%c", '\%3A');
 
+  // Print formatted travel structure upload string.
+  FormatTravelUpload(travel, post);
+  Serial.println("Formatting travel upload string...");
+  Serial.println("Printing formatted travel upload string..");
+  Serial.println(post);
+  Serial.println();
+
+  // TODO: verify SD connection
   //delay(1000);
   //if (SD.begin()) {
     //Serial.println("Card mounted");
@@ -103,6 +111,13 @@ void FormatImpactUpload(const Impact& impact, char* out) {
   impact.datetime.date.year, impact.datetime.date.month, impact.datetime.date.day,
   impact.datetime.time.hour, impact.datetime.time.minute, impact.datetime.time.second,
   impact.location.latitude, impact.location.longitude);
+}
+
+void FormatTravelUpload(const Travel& travel, char* out) {
+  sprintf(out, "datetime=%4d-%02d-%02d+%02d\\%%3A%02d\\%%3A02d&latitude=%0.6lf&longitude=%0.6lf&is-pothole=0",
+  travel.datetime.date.year, travel.datetime.date.month, travel.datetime.date.day,
+  travel.datetime.time.hour, travel.datetime.time.minute, travel.datetime.time.second,
+  travel.location.latitude, travel.location.longitude);
 }
 
 void LogUpload(const char* post) {
