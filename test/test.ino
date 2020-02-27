@@ -2,6 +2,7 @@
 #include "SD.h"
 #include "FS.h"
 #include "SPI.h"
+#include "HTTPClient.h"
 
 void setup() {
   delay(1000);  // UNIX
@@ -68,26 +69,61 @@ void setup() {
   Travel travel = {datetime, location , false};
   char formatted_travel_string[80];
   Serial.println("Formatting travel...");
-  FormattedImpact(travel, formatted_travel_string);
+  FormattedTravel(travel, formatted_travel_string);
   Serial.println("Impact formatted...");
   Serial.println("Printing formatted travel..");
   Serial.println(formatted_travel_string);
   Serial.println("Formatted travel print success!");
   Serial.println();
 
+  char post[512];
+  FormatImpactUpload(impact, post);
+  Serial.println("Formatting impact upload string...");
+  Serial.println("Printing formatted impact upload string..");
+  Serial.println(post);
+  Serial.println();
+  Serial.printf("\n%c", '\%3A');
 
-  delay(1000);
-  if (SD.begin()) {
-    Serial.println("Card mounted");
-  } else {
-    Serial.println("Failed to mount card");
-  }
-  delay(1000);
+  //delay(1000);
+  //if (SD.begin()) {
+    //Serial.println("Card mounted");
+  //} else {
+    //Serial.println("Failed to mount card");
+  //}
+  //delay(1000);
 
-  LogWrite(SD, "/log.poo", formatted_impact_string);
+  //LogWrite(SD, "/log.poo", formatted_impact_string);
 }
 
 void loop() {
+}
+
+void FormatImpactUpload(const Impact& impact, char* out) {
+  sprintf(out, "datetime=%4d-%02d-%02d+%02d\\%%3A%02d\\%%3A02d&latitude=%0.6lf&longitude=%0.6lf&is-pothole=1",
+  impact.datetime.date.year, impact.datetime.date.month, impact.datetime.date.day,
+  impact.datetime.time.hour, impact.datetime.time.minute, impact.datetime.time.second,
+  impact.location.latitude, impact.location.longitude);
+}
+
+void LogUpload(const char* post) {
+  String postData = "datetime=2020-02-22+12\%3A45\%3A13&latitude=16.1453&longitude=15.231&is-pothole=1";
+  Serial.println(postData);
+
+  HTTPClient http;
+  http.begin("http://roadreporter.us/test/eventlog/postdemo.php");
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+  const int httpCode   = http.POST(postData); // send request
+  String payload = http.getString(); // get response
+
+  Serial.println(httpCode);
+  Serial.println(payload);
+
+  http.end();
+
+  while(1) {
+    delay(10000);
+  }
 }
 
 void LogRead(fs::FS &fs, const char* path) {
