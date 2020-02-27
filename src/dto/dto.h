@@ -20,4 +20,9 @@ struct Datetime {
   Time time;
 };
 
+struct Location {
+  float latitude;
+  float longitude;
+};
+
 #endif

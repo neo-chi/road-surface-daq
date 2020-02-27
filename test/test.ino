@@ -31,15 +31,30 @@ void setup() {
   char formatted_datetime_string[80];
   Serial.println("Formatting datetime...");
   FormattedDatetime(datetime, formatted_datetime_string);
-  Serial.println("Date formatted...");
+  Serial.println("Datetime formatted...");
   Serial.println("Printing formatted datetime..");
   Serial.println(formatted_datetime_string);
   Serial.println("Formatted datetime print success!");
+  Serial.println();
+
+   // Print formatted location.
+  const Location location = {33.500291, -86.75029};
+  char formatted_location_string[80];
+  Serial.println("Formatting location...");
+  FormattedLocation(location, formatted_location_string);
+  Serial.println("Location formatted...");
+  Serial.println("Printing formatted location..");
+  Serial.println(formatted_location_string);
+  Serial.println("Formatted location print success!");
   Serial.println();
 }
 
 void loop() {
 
+}
+
+void FormattedLocation(const Location& location, char* out) {
+  sprintf(out, "%0.6lf,%0.6lf", location.latitude, location.longitude);
 }
 
 void FormattedDatetime(const Datetime& datetime, char* out) {
