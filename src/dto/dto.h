@@ -31,4 +31,10 @@ struct Impact {
   const bool is_pothole;
 };
 
+struct Travel {
+  const Datetime datetime;
+  const Location location;
+  const bool is_pothole;
+};
+
 #endif

@@ -58,6 +58,17 @@ void setup() {
   Serial.println(formatted_impact_string);
   Serial.println("Formatted impact print success!");
   Serial.println();
+
+  // Print formatted travel.
+  Impact travel = {datetime, location , false};
+  char formatted_travel_string[80];
+  Serial.println("Formatting travel...");
+  FormattedImpact(travel, formatted_travel_string);
+  Serial.println("Impact formatted...");
+  Serial.println("Printing formatted travel..");
+  Serial.println(formatted_travel_string);
+  Serial.println("Formatted travel print success!");
+  Serial.println();
 }
 
 void loop() {
@@ -70,6 +81,15 @@ int bytes_added(int result_of_sprintf) {
   } else {
     return 0;
   }
+}
+
+int FormattedTravel(const Travel& travel, char* out) {
+  int length = 0;
+  length += FormattedDatetime(travel.datetime, out + length);
+  length += bytes_added(sprintf(out + length, ","));
+  length += FormattedLocation(travel.location, out + length);
+  length += bytes_added(sprintf(out + length, ",%d", travel.is_pothole));
+  return length;
 }
 
 int FormattedImpact(const Impact& impact, char* out) {
