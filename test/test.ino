@@ -1,8 +1,13 @@
 #include "dto.h"
+#include "SD.h"
+#include "FS.h"
+#include "SPI.h"
 
 void setup() {
   delay(1000);  // UNIX
   Serial.begin(115200);  // Debugging
+
+
 
   // Print formatted date.
   const Date date = {2020, 2, 27};
@@ -69,10 +74,34 @@ void setup() {
   Serial.println(formatted_travel_string);
   Serial.println("Formatted travel print success!");
   Serial.println();
+
+
+  delay(1000);
+  if (SD.begin()) {
+    Serial.println("Card mounted");
+  } else {
+    Serial.println("Failed to mount card");
+  }
+  delay(1000);
+
+  LogWrite(SD, "/log.poo", formatted_impact_string);
 }
 
 void loop() {
 
+}
+
+void LogWrite(fs::FS &fs, const char* path, char* message) {
+  const bool file_exists = fs.exists(path);
+  if (file_exists) {
+    File log_file = fs.open(path, FILE_APPEND);
+    log_file.printf("%s", message);
+    log_file.close();
+  } else {
+    File log_file = fs.open(path, FILE_WRITE);
+    log_file.printf("%s", message);
+    log_file.close();
+  }
 }
 
 int bytes_added(int result_of_sprintf) {
