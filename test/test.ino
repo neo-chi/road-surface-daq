@@ -8,8 +8,6 @@ void setup() {
   delay(1000);  // UNIX
   Serial.begin(115200);  // Debugging
 
-
-
   // Print formatted date.
   const Date date = {2020, 2, 27};
   char formatted_date_string[80];
@@ -92,15 +90,21 @@ void setup() {
   Serial.println();
 
   // TODO: verify SD connection
-  //delay(1000);
-  //if (SD.begin()) {
-    //Serial.println("Card mounted");
-  //} else {
-    //Serial.println("Failed to mount card");
-  //}
-  //delay(1000);
+  // SD Breakout Board Connections
+  // | VCC | 3V3    |
+  // | CS  | GPIO5  |
+  // | DI  | GPIO23 |
+  // | SCK | GPIO18 |
+  // | DO  | GPIO19 |
+  // | CD  | GND    |
+  // | GND | GND    |
+  if (SD.begin()) {
+    Serial.println("Card mounted");
+  } else {
+    Serial.println("Failed to mount card");
+  }
 
-  //LogWrite(SD, "/log.poo", formatted_impact_string);
+  LogWrite(SD, "/log.poo", formatted_impact_string);
 }
 
 void loop() {
