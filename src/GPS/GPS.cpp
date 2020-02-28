@@ -28,7 +28,7 @@ Datetime GPS::getDatetime() {
 }
 
 Location GPS::getLocation() {
-  const int ktogooglemaps = 1000000;
+  const int ktogooglemaps = 10000000;
   const float latitude = (float)getLatitude() / ktogooglemaps;
   const float longitude = (float)getLongitude() / ktogooglemaps;
   const Location location{latitude, longitude};
