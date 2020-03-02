@@ -1,6 +1,7 @@
 #include "elapsed-timer.h"
 
-ElapsedTimer autosaveTimer(5000);  // Set timer for 5 minutes.
+#define AUTOSAVE_INTERVAL 5000
+ElapsedTimer autosaveTimer(AUTOSAVE_INTERVAL);  // Set timer for 5 minutes.
 
 void setup() {
   Serial.begin(115200);  // Debugging
