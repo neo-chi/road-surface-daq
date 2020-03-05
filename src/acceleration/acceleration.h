@@ -8,15 +8,12 @@
 class Acceleration {
   public:
     Acceleration(float _x, float _y, float _z);
-    Acceleration(float _x, float _z);
-    Acceleration(float _y, float _z)
-    Acceleration(float _z);
     float x = NOT_RECORDED;
     float y = NOT_RECORDED;
     float z = NOT_RECORDED;
     String toString();
   private:
-    bool _axis_recorded(float axis);
+    bool _axis_not_recorded(float axis);
 };
 
 #endif

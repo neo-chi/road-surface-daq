@@ -1,4 +1,5 @@
 #include "dto.h"
+#include "acceleration.h"
 
 // Test Date Construction
 const uint16_t year = 2020;
@@ -15,11 +16,15 @@ Time _time = {hour, minute, second};
 // Test Datetime
 Datetime datetime = {date, _time};
 
+// Test Acceleration
+float x = 0.29;
+float y = NOT_RECORDED;
+float z = 1.03;
+Acceleration acceleration{x, y, z};
+
 // Test Impact
 
 // Test Travel
-
-// Test Acceleration
 
 // Test Environment
 
@@ -46,6 +51,13 @@ void setup() {
   Serial.println("EXPECTED: \t 20200303,120819");
   Serial.print("ACTUAL: \t\t ");
   Serial.println(datetime.toString());
+  Serial.println();
+
+  // Display acceleration
+  Serial.println("TEST: \t\t\t acceleration.toString()");
+  Serial.println("EXPECTED: \t 0.29,NULL,1.03");
+  Serial.print("ACTUAL: \t\t ");
+  Serial.println(acceleration.toString());
   Serial.println();
 }
 
