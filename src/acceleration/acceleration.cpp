@@ -11,17 +11,7 @@ Acceleration::Acceleration(float _x, float _y, float _z) {
   z = _z;
 }
 
-Acceleration::Acceleration(float _x, float _z) {
-  x = _x;
-  z = _z;
-}
-
-Acceleration::Acceleration(float _y, float _z) {
-  z = _z;
-  z = _z;
-}
-
-String toString() {
+String Acceleration::toString() {
   String return_string = "";
 
   if (_axis_not_recorded(x)) {
@@ -42,18 +32,16 @@ String toString() {
 
   if (_axis_not_recorded(z)) {
     return_string.concat("NULL");
-    return_string.concat(",");
   } else {
     return_string.concat(z);
-    return_string.concat(",");
   }
   return return_string;
 }
 
 bool Acceleration::_axis_not_recorded(float axis) {
   if (axis == NOT_RECORDED) {
-    return false;
-  } else {
     return true;
+  } else {
+    return false;
   }
 }
