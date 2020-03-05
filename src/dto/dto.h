@@ -1,40 +1,74 @@
-#ifndef ROAD_SURFACE_DAQ_H_
-#define ROAD_SURFACE_DAQ_H_
+#ifndef ROAD_SURFACE_DAQ_DTO_H_
+#define ROAD_SURFACE_DAQ_DTO_H_
 
 #include "Arduino.h"
 
+String formatPrependZero(int value) {
+  String formatted_string = "";
+  if (value > 10) {
+    formatted_string.concat(value);
+  } else {
+    formatted_string.concat(0);
+    formatted_string.concat(value);
+  }
+  return formatted_string;
+}
+
 struct Date {
-  const uint16_t year;
-  const uint8_t month;
-  const uint8_t day;
+  uint16_t year;
+  uint8_t month;
+  uint8_t day;
+  String toString() {
+    String return_string = "";
+    return_string.concat(year);
+    return_string.concat(formatPrependZero(month));
+    return_string.concat(formatPrependZero(day));
+    return return_string;
+  }
 };
 
 struct Time {
-  const uint8_t hour;
-  const uint8_t minute;
-  const uint8_t second;
+  uint8_t hour;
+  uint8_t minute;
+  uint8_t second;
+  String toString() {
+    String return_string = "";
+    return_string.concat(formatPrependZero(hour));
+    return_string.concat(formatPrependZero(minute));
+    return_string.concat(formatPrependZero(second));
+    return return_string;
+  }
 };
 
 struct Datetime {
-  const Date date;
-  const Time time;
+   Date date;
+   Time time;
+  String toString() {
+    String return_string = "";
+    return_string.concat(date.toString());
+    return_string.concat(",");
+    return_string.concat(time.toString());
+    return return_string;
+  }
 };
 
 struct Location {
-  const float latitude;
-  const float longitude;
-};
-
-struct Impact {
-  const Datetime datetime;
-  const Location location;
-  const bool is_pothole;
+   float latitude;
+   float longitude;
+  String toString() {
+    String return_string = "";
+    return_string.concat(latitude);
+    return_string.concat(",");
+    return_string.concat(longitude);
+    return return_string;
+  }
 };
 
 struct Travel {
-  const Datetime datetime;
-  const Location location;
-  const bool is_pothole;
+   Datetime datetime;
+   Location location;
+   bool is_pothole;
 };
 
 #endif
+
