@@ -41,8 +41,8 @@ struct Time {
 };
 
 struct Datetime {
-   Date date;
-   Time time;
+  Date date;
+  Time time;
   String toString() {
     String return_string = "";
     return_string.concat(date.toString());
@@ -53,13 +53,14 @@ struct Datetime {
 };
 
 struct Location {
-   float latitude;
-   float longitude;
+  float latitude;
+  float longitude;
   String toString() {
     String return_string = "";
-    return_string.concat(latitude);
-    return_string.concat(",");
-    return_string.concat(longitude);
+    const int kSizeLocationString = 30;
+    char format[kSizeLocationString];
+    sprintf(format, "%0.6lf,%0.6lf", latitude, longitude);
+    return_string.concat(format);
     return return_string;
   }
 };
