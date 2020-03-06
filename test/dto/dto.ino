@@ -38,11 +38,25 @@ void setup() {
   delay(1000);  // UNIX
   Serial.begin(115200);  // Debugging
 
-  // Display date
+  // Display date.toString()
   Serial.println("TEST: \t\t\t date.toString()");
   Serial.println("EXPECTED: \t 20200303");
   Serial.print("ACTUAL: \t\t ");
   Serial.println(date.toString());
+  Serial.println();
+
+  // Display date.toLogString()
+  Serial.println("TEST: \t\t\t date.toLogString()");
+  Serial.println("EXPECTED: \t 2020-03-03");
+  Serial.print("ACTUAL: \t\t ");
+  Serial.println(date.toLogString());
+  Serial.println();
+
+  // Display date.toUploadString()
+  Serial.println("TEST: \t\t\t date.toUploadString()");
+  Serial.println("EXPECTED: \t 2020-03-03");
+  Serial.print("ACTUAL: \t\t ");
+  Serial.println(date.toUploadString());
   Serial.println();
 
   // Display time

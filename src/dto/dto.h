@@ -3,14 +3,14 @@
 
 #include "Arduino.h"
 
-
 // Stores a date, year, month, and day.
 //
 // Date.toString(): return the String YYYYMMDD.
 // Date.toUploadString(): return the String YYYY-MM-DD.
 class Date {
   public:
-    Date(uint16_t year, uint16_t month, uint16_t day);
+    Date();
+    Date(uint16_t _year, uint8_t _month, uint8_t _day);
     ~Date() {};
     uint16_t year;
     uint8_t month;
@@ -40,19 +40,26 @@ struct Time {
       formatted_string.concat(value);
     }
     return formatted_string;
-}
+  }
 };
 
-struct Datetime {
-  Date date;
-  Time time;
-  String toString() {
-    String return_string = "";
-    return_string.concat(date.toString());
-    return_string.concat(",");
-    return_string.concat(time.toString());
-    return return_string;
-  }
+class Datetime {
+  public:
+    Datetime(Date _date, Time _time);
+    Date date;
+    Time time;
+    String toString(); 
+    String toLogString();
+    String toUploadString();
+    Date getDate();
+    Time getTime();
+    uint16_t getYear();
+    uint8_t getMonth();
+    uint8_t getDay();
+    uint8_t getHour();
+    uint8_t getMinute();
+    uint8_t getSecond();
+  private:
 };
 
 struct Location {
