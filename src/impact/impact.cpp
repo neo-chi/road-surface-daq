@@ -7,6 +7,8 @@
 //   Location : Latitude (0.6lf), Longitude (0.6lf)
 //   is_pothole: boolean true --> differentiates Travel logs from Impact logs.
 Impact::Impact(Datetime _datetime, Location _location) {
+  datetime = _datetime;
+  location = _location;
   Serial.println("Constructed an impact");  // Debugging
 }
 
@@ -20,6 +22,11 @@ Impact::Impact(Datetime _datetime, Location _location) {
 // @Log String Format: YYYYMMDD HHMMSS,LATITUDE,LONGITUDE,1
 String Impact::toLogString() {
   String log_string = "";
-  log_string.concat("Hello");
+  log_string.concat(datetime.toString());
+  log_string.concat(",");
+  log_string.concat(location.toString());
+  log_string.concat(",");
+  log_string.concat("1");
+  return log_string;
 }
 

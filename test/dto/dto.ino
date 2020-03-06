@@ -1,5 +1,5 @@
-#include "dto.h"
 #include "acceleration.h"
+#include "impact.h"
 
 // Test Date Construction
 const uint16_t year = 2020;
@@ -28,6 +28,7 @@ float longitude = -85.03;
 Location location{latitude, longitude};
 
 // Test Impact
+Impact impact{datetime, location};
 
 // Test Travel
 
@@ -70,6 +71,13 @@ void setup() {
   Serial.println("EXPECTED: \t 35.3639,-85.03");
   Serial.print("ACTUAL: \t\t ");
   Serial.println(location.toString());
+  Serial.println();
+
+  // Display Impact
+  Serial.println("TEST: \t\t\t impact.toString()");
+  Serial.println("EXPECTED: \t 20200303,120819,35.3639,-85.03,1");
+  Serial.print("ACTUAL: \t\t ");
+  Serial.println(impact.toLogString());
   Serial.println();
 }
 
