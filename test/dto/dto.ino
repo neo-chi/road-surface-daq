@@ -73,11 +73,18 @@ void setup() {
   Serial.println(location.toString());
   Serial.println();
 
-  // Display Impact
-  Serial.println("TEST: \t\t\t impact.toString()");
+  // Display Impact Log String
+  Serial.println("TEST: \t\t\t impact.toLogString()");
   Serial.println("EXPECTED: \t 20200303,120819,35.3639,-85.03,1");
   Serial.print("ACTUAL: \t\t ");
   Serial.println(impact.toLogString());
+  Serial.println();
+
+  // Display Impact Log String
+  Serial.println("TEST: \t\t\t impact.toUploadString()");
+  Serial.println("EXPECTED: \t 20200303,120819,35.3639,-85.03,1");
+  Serial.print("ACTUAL: \t\t ");
+  Serial.println(impact.toUploadString());
   Serial.println();
 }
 

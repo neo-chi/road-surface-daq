@@ -30,3 +30,46 @@ String Impact::toLogString() {
   return log_string;
 }
 
+String Impact::toUploadString() {
+
+  // Format datetime to POST format
+  String datetime_string = "datetime=";
+  datetime_string.concat(datetime.date.year);
+  datetime_string.concat("-");
+  datetime_string.concat(datetime.date.month);
+  datetime_string.concat("-");
+  datetime_string.concat(datetime.date.day);
+  datetime_string.concat("+");
+  datetime_string.concat(datetime.time.hour);
+  datetime_string.concat("\\%3A");
+  datetime_string.concat(datetime.time.minute);
+  datetime_string.concat("\\%3A");
+  datetime_string.concat(datetime.time.second);
+
+  // Format latitude to POST format
+  String latitude_string = "latitude=";
+  char formatted_latitude[15];
+  sprintf(formatted_latitude, "%0.6lf", location.latitude);
+  latitude_string.concat(formatted_latitude);
+
+  // Format longitude to POST format
+  String longitude_string = "longitude=";
+  char formatted_longitude[15];
+  sprintf(formatted_longitude, "%0.6lf", location.longitude);
+  longitude_string.concat(formatted_longitude);
+
+  // Format severity to POST format
+  String severity_string = "is-pothole=1";
+
+  // Concatenate the above strings to get complete POST string
+  String upload_string = "";
+  upload_string.concat(datetime_string);
+  upload_string.concat("&");
+  upload_string.concat(latitude_string);
+  upload_string.concat("&");
+  upload_string.concat(longitude_string);
+  upload_string.concat("&");
+  upload_string.concat(severity_string);
+
+  return upload_string;
+}
