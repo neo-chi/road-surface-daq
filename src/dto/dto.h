@@ -3,16 +3,6 @@
 
 #include "Arduino.h"
 
-String formatPrependZero(int value) {
-  String formatted_string = "";
-  if (value > 10) {
-    formatted_string.concat(value);
-  } else {
-    formatted_string.concat(0);
-    formatted_string.concat(value);
-  }
-  return formatted_string;
-}
 
 struct Date {
   uint16_t year;
@@ -24,6 +14,16 @@ struct Date {
     return_string.concat(formatPrependZero(month));
     return_string.concat(formatPrependZero(day));
     return return_string;
+  }
+  String formatPrependZero(int value) {
+    String formatted_string = "";
+    if (value > 10) {
+      formatted_string.concat(value);
+    } else {
+      formatted_string.concat(0);
+      formatted_string.concat(value);
+    }
+    return formatted_string;
   }
 };
 
@@ -38,6 +38,16 @@ struct Time {
     return_string.concat(formatPrependZero(second));
     return return_string;
   }
+  String formatPrependZero(int value) {
+    String formatted_string = "";
+    if (value > 10) {
+      formatted_string.concat(value);
+    } else {
+      formatted_string.concat(0);
+      formatted_string.concat(value);
+    }
+    return formatted_string;
+}
 };
 
 struct Datetime {
