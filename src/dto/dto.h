@@ -4,27 +4,20 @@
 #include "Arduino.h"
 
 
-struct Date {
-  uint16_t year;
-  uint8_t month;
-  uint8_t day;
-  String toString() {
-    String return_string = "";
-    return_string.concat(year);
-    return_string.concat(formatPrependZero(month));
-    return_string.concat(formatPrependZero(day));
-    return return_string;
-  }
-  String formatPrependZero(int value) {
-    String formatted_string = "";
-    if (value > 10) {
-      formatted_string.concat(value);
-    } else {
-      formatted_string.concat(0);
-      formatted_string.concat(value);
-    }
-    return formatted_string;
-  }
+// Stores a date, year, month, and day.
+//
+// Date.toString(): return the String YYYYMMDD.
+// Date.toUploadString(): return the String YYYY-MM-DD.
+class Date {
+  public:
+    Date(uint16_t year, uint16_t month, uint16_t day);
+    ~Date() {};
+    uint16_t year;
+    uint8_t month;
+    uint8_t day;
+    String toString();
+    String toLogString();
+    String toUploadString();
 };
 
 struct Time {
