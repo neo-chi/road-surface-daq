@@ -45,3 +45,4 @@ bool Acceleration::_axis_not_recorded(float axis) {
     return false;
   }
 }
+

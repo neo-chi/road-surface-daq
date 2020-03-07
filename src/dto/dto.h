@@ -9,7 +9,6 @@
 // Date.toUploadString(): return the String YYYY-MM-DD.
 class Date {
   public:
-    Date();
     Date(uint16_t _year, uint8_t _month, uint8_t _day);
     ~Date() {};
     uint16_t year;
@@ -20,45 +19,26 @@ class Date {
     String toUploadString();
 };
 
-struct Time {
-  uint8_t hour;
-  uint8_t minute;
-  uint8_t second;
-  String toString() {
-    String return_string = "";
-    return_string.concat(formatPrependZero(hour));
-    return_string.concat(formatPrependZero(minute));
-    return_string.concat(formatPrependZero(second));
-    return return_string;
-  }
-  String formatPrependZero(int value) {
-    String formatted_string = "";
-    if (value > 10) {
-      formatted_string.concat(value);
-    } else {
-      formatted_string.concat(0);
-      formatted_string.concat(value);
-    }
-    return formatted_string;
-  }
+class Time {
+  public:
+    Time(uint8_t hour, uint8_t minute, uint8_t second);
+    ~Time() {};
+    uint8_t hour;
+    uint8_t minute;
+    uint8_t second;
+    String toString();
+    String toLogString();
+    String toUploadString();
 };
 
 class Datetime {
   public:
     Datetime(Date _date, Time _time);
     Date date;
-    Time time;
-    String toString(); 
+    Time time_;
+    String toString();
     String toLogString();
     String toUploadString();
-    Date getDate();
-    Time getTime();
-    uint16_t getYear();
-    uint8_t getMonth();
-    uint8_t getDay();
-    uint8_t getHour();
-    uint8_t getMinute();
-    uint8_t getSecond();
   private:
 };
 

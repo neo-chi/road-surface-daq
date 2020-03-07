@@ -1,5 +1,6 @@
 #include "acceleration.h"
-#include "impact.h"
+#include "dto.h"
+//#include "impact.h"
 
 // Test Date Construction
 const uint16_t year = 2020;
@@ -25,10 +26,10 @@ Acceleration acceleration{x, y, z};
 // Test Location
 float latitude = 35.3639;
 float longitude = -85.03;
-Location location{latitude, longitude};
+//Location location{latitude, longitude};
 
 // Test Impact
-Impact impact{datetime, location};
+//Impact impact{datetime, location};
 
 // Test Travel
 
@@ -66,11 +67,40 @@ void setup() {
   Serial.println(_time.toString());
   Serial.println();
 
+  // Display time.toLogString()
+  Serial.println("TEST: \t\t\t time.toLogString()");
+  Serial.println("EXPECTED: \t 12:08:19");
+  Serial.print("ACTUAL: \t\t ");
+  Serial.println(_time.toLogString());
+  Serial.println();
+
+  // Display time.toUploadString()
+  Serial.println("TEST: \t\t\t time.toUploadString()");
+  Serial.println("EXPECTED: \t 12\\%3A08\\%3A19");
+  Serial.print("ACTUAL: \t\t ");
+  Serial.println(_time.toUploadString());
+  Serial.println();
+
+
   // Display datetime
   Serial.println("TEST: \t\t\t datetime.toString()");
   Serial.println("EXPECTED: \t 20200303,120819");
   Serial.print("ACTUAL: \t\t ");
   Serial.println(datetime.toString());
+  Serial.println();
+
+  // Display datetime.toLogString()
+  Serial.println("TEST: \t\t\t datetime.toLogString()");
+  Serial.println("EXPECTED: \t 2020-03-03,12:08:19");
+  Serial.print("ACTUAL: \t\t ");
+  Serial.println(datetime.toLogString());
+  Serial.println();
+
+  // Display datetime.toUploadString()
+  Serial.println("TEST: \t\t\t datetime.toUploadString()");
+  Serial.println("EXPECTED: \t datetime=2020-03-03+12\\%3A08\\%3A19");
+  Serial.print("ACTUAL: \t\t ");
+  Serial.println(datetime.toUploadString());
   Serial.println();
 
   // Display acceleration
@@ -84,21 +114,21 @@ void setup() {
   Serial.println("TEST: \t\t\t location.toString()");
   Serial.println("EXPECTED: \t 35.3639,-85.03");
   Serial.print("ACTUAL: \t\t ");
-  Serial.println(location.toString());
+  //Serial.println(location.toString());
   Serial.println();
 
   // Display Impact Log String
   Serial.println("TEST: \t\t\t impact.toLogString()");
-  Serial.println("EXPECTED: \t 20200303,120819,35.3639,-85.03,1");
+  Serial.println("EXPECTED: \t 2020-03-03,12:08:19,35.3639,-85.03,1");
   Serial.print("ACTUAL: \t\t ");
-  Serial.println(impact.toLogString());
+  //Serial.println(impact.toLogString());
   Serial.println();
 
   // Display Impact Log String
   Serial.println("TEST: \t\t\t impact.toUploadString()");
-  Serial.println("EXPECTED: \t 20200303,120819,35.3639,-85.03,1");
+  Serial.println("EXPECTED: \t impact=20200303,120819,35.3639,-85.03,1");
   Serial.print("ACTUAL: \t\t ");
-  Serial.println(impact.toUploadString());
+  //Serial.println(impact.toUploadString());
   Serial.println();
 }
 
