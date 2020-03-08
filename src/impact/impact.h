@@ -2,7 +2,9 @@
 #define _ROAD_SURFACE_DAQ_IMPACT_H
 
 #include "Arduino.h"
-#include "dto.h"
+#include "datetime.h"
+#include "location.h"
+
 
 class Impact {
   public:
