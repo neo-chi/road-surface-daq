@@ -22,6 +22,7 @@ Impact::Impact(Datetime _datetime, Location _location)
 String Impact::toLogString() {
   String log = "";
   log.concat(datetime.toLogString());
+  log.concat(",");
   log.concat(location.toLogString());
   return log;
 }
@@ -38,6 +39,5 @@ String Impact::toUploadString() {
   upload_string.concat(location.toUploadString());
   upload_string.concat("&");
   upload_string.concat(SEVERITY);
-
   return upload_string;
 }
