@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 
-#define NOT_RECORDED -100
+#define NOT_RECORDED -999999
 
 class Acceleration {
   public:
@@ -11,7 +11,8 @@ class Acceleration {
     float x = NOT_RECORDED;
     float y = NOT_RECORDED;
     float z = NOT_RECORDED;
-    String toString();
+    String toLogString();
+    String toUploadString();
   private:
     bool _axis_not_recorded(float axis);
 };
