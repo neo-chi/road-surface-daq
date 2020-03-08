@@ -5,44 +5,26 @@
 // If data for a given axis is not recorded, the value is replaced with a
 // constant NOT_RECORDED defined as -100. When printing a string, the
 // values not recorded will be displayed as NULL.
-Acceleration::Acceleration(float _x, float _y, float _z) {
-  x = _x;
-  y = _y;
-  z = _z;
+Acceleration::Acceleration(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {
+  // Nothing to do here.
 }
 
-String Acceleration::toString() {
-  String return_string = "";
-
-  if (_axis_not_recorded(x)) {
-    return_string.concat("NULL");
-    return_string.concat(",");
-  } else {
-    return_string.concat(x);
-    return_string.concat(",");
-  }
-
-  if (_axis_not_recorded(y)) {
-    return_string.concat("NULL");
-    return_string.concat(",");
-  } else {
-    return_string.concat(y);
-    return_string.concat(",");
-  }
-
-  if (_axis_not_recorded(z)) {
-    return_string.concat("NULL");
-  } else {
-    return_string.concat(z);
-  }
-  return return_string;
+// Return the String "{acceleration.x},{acceleration.y},{acceleration.z}";
+String Acceleration::toLogString() {
+  String log = "";
+  char format[80];
+  sprintf(format, "%0.6lf,%0.6lf,%0.6lf", x, y, z);
+  log.concat(format);
+  return log;
 }
 
-bool Acceleration::_axis_not_recorded(float axis) {
-  if (axis == NOT_RECORDED) {
-    return true;
-  } else {
-    return false;
-  }
+// Returns the String "acceleration-x={X}&acceleratio-y={Y}&accelerationz={Z}"
+String Acceleration::toUploadString() {
+  String upload = "";
+  char format[80];
+  sprintf(format,
+          "acceleration-x=%0.6lf&acceleration-y=%0.6lf&acceleration-z=%0.6lf",
+          x, y, z);
+  upload.concat(format);
+  return upload;
 }
-
