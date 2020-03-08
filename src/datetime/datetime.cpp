@@ -13,7 +13,7 @@ String Datetime::toDateFileName() {
 }
 
 // Return the String time filename HHMMSS
-String Datetime::toDateFileName() {
+String Datetime::toTimeFileName() {
   return time.toFileNameString();
 }
 
