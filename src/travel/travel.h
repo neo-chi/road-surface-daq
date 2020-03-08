@@ -2,7 +2,8 @@
 #define _ROAD_SURFACE_DAQ_TRAVEl_H
 
 #include "Arduino.h"
-#include "dto.h"
+#include "datetime.h"
+#include "location.h"
 
 class Travel {
   public:

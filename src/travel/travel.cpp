@@ -13,6 +13,16 @@ Travel::Travel(Datetime _datetime, Location _location)
 String Travel::toLogString() {
   String return_string = "";
   return_string.concat(datetime.toLogString());
-  //return_string.concat(location.toLogString());
+  return_string.concat(",");
+  return_string.concat(location.toLogString());
+  return return_string;
+}
+
+// Return the String YYYY-MM-DD,HH-MM-SS,{latituce},{longitude}
+String Travel::toUploadString() {
+  String return_string = "";
+  return_string.concat(datetime.toUploadString());
+  return_string.concat("&");
+  return_string.concat(location.toUploadString());
   return return_string;
 }

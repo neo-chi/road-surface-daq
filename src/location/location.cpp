@@ -11,7 +11,7 @@ Location::Location(const float _latitude, const float _longitude)
 // Returns the String LATITUDE,LONGITUDE
 String Location::toLogString() {
   String return_string = "";
-  char formatted_location[20];
+  char formatted_location[80];
   sprintf(formatted_location,
       "%0.6lf,%0.6lf",
       latitude, longitude);
@@ -26,5 +26,6 @@ String Location::toUploadString() {
   sprintf(formatted_location,
       "latitude=%0.6lf&longitude=%0.6lf",
       latitude, longitude);
+  return_string.concat(formatted_location);
   return return_string;
 }
