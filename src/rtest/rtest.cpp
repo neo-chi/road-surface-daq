@@ -14,19 +14,19 @@ void StringTest::Execute() {
 }
 
 void StringTest::TestName() {
-  String message = "TEST: \t\t\t";
+  String message = "TEST: \t\t\t\t\t";
   message.concat(name);
   Serial.println(message);
 }
 
 void StringTest::TestExpected() {
-  String message = "EXPECTED \t\t";
+  String message = "EXPECTED: \t\t\t";
   message.concat(expected);
   Serial.println(message);
 }
 
 void StringTest::TestExperimental() {
-  String message = "EXPECTED \t\t";
+  String message = "EXPERIMENTAL: \t";
   message.concat(experimental);
   Serial.println(message);
 }
