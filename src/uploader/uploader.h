@@ -7,6 +7,7 @@
 
 class Uploader {  // @note Implements Observable
   public:
+    Uploader();
     void Upload(const String& location_header, const String& post_data);
   private:
     // WiFiClient wifi;
