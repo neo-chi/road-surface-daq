@@ -9,8 +9,9 @@
 class Storage {  // @interface Implements Observable
   public:
     Storage();  // initialize SD, fs = SD
-    void read(const String& path, String *buffer, uint8_t buffer_len);  // buffer is output
-    void write(const String& path, String *buffer, uint8_t buffer_len);  // buffer is input
+    void read(const String& path, String *buffer, uint16_t buffer_len);  // buffer is output
+    void write(const String& path, String *buffer, uint16_t buffer_len);  // buffer is input
+    void write(const String& path, String& data);
     bool mkdir(const String& path);
     bool rename(const String& path_from, const String& path_to);
     bool remove(const String& path);
