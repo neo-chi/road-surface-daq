@@ -149,6 +149,10 @@ void setup() {
 
   // Test storage remove
   storage.remove("/uploaded/092103.imp");
+
+  // Test Uploader upload
+  Uploader uploader;
+  uploader.Upload("https://roadreporter.com/test/map/upload.php", "datetime=2020-03-12+12\\%3A12\\%3A15\\%3A02&latitude=35.227&longitude=-86.298&is-pothole=0");
 }
 
 
