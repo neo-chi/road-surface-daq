@@ -4,39 +4,22 @@
 
 ### Data Transfer Objects
 
-- [ ] Implement Date
-- [ ] Implement Time
-- [ ] Implement Datetime
-- [ ] Implement Acceleration
-- [ ] Implement Impact
+- [x] Implement Date
+- [x] Implement Time
+- [x] Implement Datetime
+- [x] Implement Acceleration
+- [x] Implement Impact
   - [ ] Refactor Impact to accept an enum for impact-severity
-- [ ] Implement Travel
-- [ ] Implement Environment
+- [x] Implement Travel
+- [x] Implement Environment
 
 ### Actions
 
-- [ ] Implement Timer
-- [ ] Implement LogWriter
-  - [ ] log impact
-  - [ ] log travel
-  - [ ] log acceleration
-  - [ ] log environment
-- [ ] Implement LogReader
-  - [ ] read impact
-  - [ ] read travel
-  - [ ] read acceleration
-  - [ ] read environment
-- [ ] Implement LogManager
-  - [ ] mkdir
-  - [ ] rm
-  - [ ] mv
-  - [ ] exists
-- [ ] WiFiManager
-- [ ] Uploader
-  - [ ] impact
-  - [ ] travel
-  - [ ] acceleration
-  - [ ] environment
+- [x] Test DataCollector
+- [x] Test Storage
+- [] Test DataCollector -> Storage mediation
+- [] Test Uploader
+- [] Test Stroage -> Uploader mediation
 
 ## Table of Contents
 
@@ -54,10 +37,10 @@ severity of the damage to the road.
 
 **Content:**
 
-DATETIME,LOCATION,SPEED,ENVIRONMENT **\n**
-ACCELERATION_X,ACCLERATION_Y,ACCELERATION_Z **\n**
-ACCELERATION_X,ACCLERATION_Y,ACCELERATION_Z **\n**
-ACCELERATION_X,ACCLERATION_Y,ACCELERATION_Z **\n**
+DATETIME,LOCATION,SPEED,ENVIRONMENT **\n** <br>
+ACCELERATION_X,ACCLERATION_Y,ACCELERATION_Z **\n** <br>
+ACCELERATION_X,ACCLERATION_Y,ACCELERATION_Z **\n** <br>
+ACCELERATION_X,ACCLERATION_Y,ACCELERATION_Z **\n** <br>
 
 ...
 
@@ -74,9 +57,9 @@ without the date, time, location, or environmental data tagged.
 
 **Content:**
 
-ACCELERATION_X,ACCLERATION_Y,ACCELERATION_Z **\n**
-ACCELERATION_X,ACCLERATION_Y,ACCELERATION_Z **\n**
-ACCELERATION_X,ACCLERATION_Y,ACCELERATION_Z **\n**
+ACCELERATION_X,ACCLERATION_Y,ACCELERATION_Z **\n** <br>
+ACCELERATION_X,ACCLERATION_Y,ACCELERATION_Z **\n** <br>
+ACCELERATION_X,ACCLERATION_Y,ACCELERATION_Z **\n** <br>
 
 ...
 
@@ -92,9 +75,9 @@ points are quality roads, without severe damage to its surface.
 
 **Content:**
 
-DATETIME,LOCATION,SPEED **\n**
-DATETIME,LOCATION,SPEED **\n**
-DATETIME,LOCATION,SPEED **\n**
+DATETIME,LOCATION,SPEED **\n** <br>
+DATETIME,LOCATION,SPEED **\n** <br>
+DATETIME,LOCATION,SPEED **\n** <br>
 
 ...
 
@@ -110,11 +93,9 @@ may be correlated with road surface deterioration rate with respect to time.
 
 **Content:**
 
-DATETIME,LOCATION,ENVIORNMENT
-
-DATETIME,LOCATION,ENVIORNMENT
-
-DATETIME,LOCATION,ENVIORNMENT
+DATETIME,LOCATION,ENVIORNMENT **\n** <br>
+DATETIME,LOCATION,ENVIORNMENT **\n** <br>
+DATETIME,LOCATION,ENVIORNMENT **\n** <br>
 
 ...
 
