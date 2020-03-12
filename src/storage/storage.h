@@ -2,13 +2,16 @@
 #define _ROAD_SURFACE_DAQ_STORAGE_H
 
 #include "Arduino.h"
+#include "storage_event.h"
 // @require FS.h
 // @require SD.h
 // @require SPI.h
 
+class Mediator;
 class Storage {  // @interface Implements Observable
   public:
     Storage();  // initialize SD, fs = SD
+    void Attach(Mediator mediator);
     void read(const String& path, String *buffer, uint16_t buffer_len);  // buffer is output
     void write(const String& path, String *buffer, uint16_t buffer_len);  // buffer is input
     void write(const String& path, String& data);
@@ -16,6 +19,7 @@ class Storage {  // @interface Implements Observable
     bool rename(const String& path_from, const String& path_to);
     bool remove(const String& path);
   private:
+    Mediator *mediator;
     // FS::fs &fs
       // fs.mkdir
       // fs.rename --> rename a file or move a file
