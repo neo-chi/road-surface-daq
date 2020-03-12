@@ -1,4 +1,5 @@
 #include "storage.h"
+#include "mediator.h"
 
 Storage::Storage() {
   // SD.begin()
