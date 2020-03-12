@@ -1,4 +1,7 @@
 #include "mediator.h"
+#include "data_collector.h"
+#include "storage.h"
+#include "uploader.h"
 
 void setup() {
   delay(1000);  // UNIX
@@ -153,6 +156,16 @@ void setup() {
   // Test Uploader upload
   Uploader uploader;
   uploader.Upload("https://roadreporter.com/test/map/upload.php", "datetime=2020-03-12+12\\%3A12\\%3A15\\%3A02&latitude=35.227&longitude=-86.298&is-pothole=0");
+
+  Mediator mediator;
+  data_collector_event _data_collector_event = data_collector_event::travel_buffer_full;
+  mediator.Update(_data_collector_event);
+
+  storage_event _storage_event = storage_event::file_write_failure;
+  mediator.Update(_storage_event);
+
+  uploader_event _uploader_event = uploader_event::wifi_disconnected;
+  mediator.Update(_uploader_event);
 }
 
 
