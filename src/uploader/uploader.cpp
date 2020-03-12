@@ -1,4 +1,5 @@
 #include "uploader.h"
+#include "mediator.h"
 
 Uploader::Uploader() {
   Serial.println("Created an Uploader");
