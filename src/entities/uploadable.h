@@ -10,7 +10,7 @@
                  * Returns the location header String pointing to the upload PHP
                  * script for this data.
                  */
-                virtual String location() = 0;
+                virtual String location_header() = 0;
                 /*
                  * Returns the POST url-encoded-form String for this data.
                  */
