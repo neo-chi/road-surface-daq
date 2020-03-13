@@ -147,3 +147,73 @@ sensor.
 | --------------- | ------ | --- | ------- | ------------- |
 | --------------- | ------ | --- | ------- | ------------- |
 | --------------- | ------ | --- | ------- | ------------- |
+
+## Software Architecture
+
+### Core Logic and Entities
+
+### Use Cases
+
+**Actors, Use Cases**
+* Machine Learning
+  * Collect Impact Data (GPS Connection)
+    * Impact (BoxId, Datetime, Location, Environment, Speed, Acceleration[], Severity)
+  * Collect Impact Data (No GPS Connection)
+    * Impact (BoxId, Environment, Acceleration[], Severity)
+* Road Service Dispatcher
+  * Record Damaged Road Locations
+    * Impact (BoxId, Datetime, Location, Environment, Speed, Acceleration[], Severity)
+  * Record Healthy Road Locations
+    * Travel (BoxId, Datetime, Location, Environment, Speed)
+
+**Inputs**
+* GPS
+  * Latitude
+  * Longitude
+  * Speed
+  * Year
+  * Month
+  * Day
+  * Hour
+  * Minute
+  * Second
+  * Millisecond
+* Accelerometer
+  * X Acceleration
+  * Y Acceleration
+  * Z Acceleration
+* Environmental Sensor
+  * Temperature
+  * Humidity
+  * Pressure
+  * Altitude
+
+**Outputs**
+* Storage (SD Card)
+  * Impact Log (GPS)
+    * Directory: "/{Date}"
+    * Filename: "{Time (HHMMSSmm)}"
+    * File extension: ".gip"
+  * Impact Log (NO GPS)
+    * Directory "/{Date}"
+    * Filename: "{imp{xxxxx}}"
+    * File extension: ".ip"
+  * Travel Log (GPS)
+    * Directory "/{Date}"
+    * Filename: "{Time (HHMMSSmm)}"
+    * File extension: ".trv"
+* Upload
+  * Impact Log (GPS)
+    * Header Location = "https://azure.../gip_upload.php
+    * POST = ...
+  * Impact Log (NO GPS)
+    * Header Location = "https://azure.../ip_upload.php
+    * POST = ...
+  * Travel Log (GPS)
+    * Header Location = "https://azure.../trv_upload.php
+    * POST = ...
+
+**Controllers**
+* Impact Controller (GPS)
+* Impact Controller (NO GPS)
+* Travel Controller
