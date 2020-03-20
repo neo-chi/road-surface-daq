@@ -8,7 +8,8 @@
 class EnvironmentalSensor
 {
         public:
-                environmental_data *read();
+                EnvironmentalSensor();
+                environmental_data read();
         private:
                 // Adafruit_BME_280 driver;
 };

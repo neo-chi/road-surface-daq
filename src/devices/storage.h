@@ -1,19 +1,20 @@
 #pragma once
 
 #include "Arduino.h"
-#include "FS.h"
-#include "SD.h"
-#include "SPI.h"
+//#include "FS.h"
+//#include "SD.h"
+//#include "SPI.h"
 
 class Storage
 {
         public:
-                void mkdir(String path);
-                void mv(String from, String to);
-                void rm(String path);
-                void read(String path, String *out);
-                void write(String path, String message);
-                void write(String path, String *buffer, int buffer_size);
+                Storage();
+                void mkdir(char *path);
+                void mv(char *path_from, char *path_to);
+                void rm(char *path);
+                void read(char *path, char **out);
+                void write(char *path, char *message);
+                void write(char *path, char **buffer, int buffer_size);
         private:
-                fs::FS file_system;
+ //               fs::FS file_system;
 };

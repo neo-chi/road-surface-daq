@@ -7,12 +7,14 @@
 class GPS
 {
         public:
-                gps_data *read();
+                GPS();
+                gps_data read();
                 void connect_to_satellites(long timeout = 0);
-                bool satellite_is_connected();
+                bool is_connected_to_satellites();
                 bool vehicle_is_moving();
         private:
                 // SFE_UBLOX_GPS driver
+                gps_data data;
                 uint16_t year_cache;
                 uint8_t month_cache;
                 uint8_t day_cache;

@@ -9,7 +9,7 @@ class Accelerometer
         public:
                 Accelerometer();
                 accelerometer_data *read();
-                int buffer_size();
+                int size_buffer();
                 void unlatch_interrupt();
                 bool interrupt_is_latched();
                 bool buffer_is_full();
