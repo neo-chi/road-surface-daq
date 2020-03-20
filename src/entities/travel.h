@@ -19,5 +19,11 @@ struct travel_data {
                 float latitude;
                 float longitude;
         };
+        struct {
+                float temperature;
+                float humidity;
+                float pressure;
+                float altitude;
+        };
         float speed;
 };

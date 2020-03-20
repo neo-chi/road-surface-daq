@@ -3,6 +3,9 @@
 #include "Arduino.h"
 
 struct impact_data {
+        float speed;
+        accelerometer_data *acceleration_buffer;
+        int acceleration_buffer_length;
         struct {
                 uint16_t year;
                 uint8_t month;
@@ -18,12 +21,10 @@ struct impact_data {
                 float latitude;
                 float longitude;
         };
-        float speed;
         struct {
                 float temperature;
                 float humidity;
                 float pressure;
                 float altitude;
         };
-        //AccelerometerDataBuffer *acceleration_buffer;
 };
