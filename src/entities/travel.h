@@ -2,6 +2,23 @@
 
 #include "Arduino.h"
 
+/**
+ * Aggregates data relevant to recording and analysing healthy roads.
+ *
+ * @year
+ * @month
+ * @day
+ * @hour
+ * @minute
+ * @second
+ * @millisecond
+ * @latitude
+ * @longitude
+ * @temperature
+ * @humidity
+ * @pressure
+ * @altitude
+ **/
 struct travel_data {
         struct {
                 uint16_t year;

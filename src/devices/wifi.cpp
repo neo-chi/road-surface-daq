@@ -7,7 +7,7 @@
  * @param psk: network password.
  *
  * @returns WiFi object
- */
+ **/
 WiFi::WiFi(char *ssid, char *psk)
 {
         this->set_ssid(ssid);
@@ -18,7 +18,7 @@ WiFi::WiFi(char *ssid, char *psk)
  * Attempt WiFi connection.
  *
  * @param timeout: end connection attempt after time in milliseconds.
- */
+ **/
 void WiFi::connect(long timeout)
 {
         // Display network details.
@@ -70,7 +70,7 @@ void WiFi::connect(long timeout)
 
 /**
  * Disable WiFi.
- */
+ **/
 void WiFi::disconnect()
 {
         Serial.println("WiFi disconnected!");
@@ -80,7 +80,7 @@ void WiFi::disconnect()
  * Check WiFi connectivity
  *
  * @returns bool
- */
+ **/
 bool WiFi::is_connected()
 {
         return false;
@@ -89,8 +89,8 @@ bool WiFi::is_connected()
 /**
  * Update network name.
  *
- * @param ssid
- */
+ * @param ssid wifi network name.
+ **/
 void WiFi::set_ssid(char *ssid)
 {
         Serial.printf("Updated WiFi SSID to %s\n", ssid);
@@ -100,7 +100,7 @@ void WiFi::set_ssid(char *ssid)
 /**
  * Update network password.
  *
- * @param psk
+ * @param psk wifi network password.
  */
 void WiFi::set_psk(char *psk)
 {

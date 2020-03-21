@@ -2,10 +2,30 @@
 
 #include "Arduino.h"
 
+/**
+ * The impact_data structure aggregates all of the data important to recording
+ * and analyzing an impact event.
+ *
+ * @speed
+ * @*acceleration_buffer
+ * @year
+ * @month
+ * @day
+ * @hour
+ * @minute
+ * @second
+ * @millisecond
+ * @latitude
+ * @longitude
+ * @temperature
+ * @humidity
+ * @pressure
+ * @altitude
+ **/
 struct impact_data {
-        float speed;
+        float               speed;
         accelerometer_data *acceleration_buffer;
-        int acceleration_buffer_length;
+        int                 acceleration_buffer_length;
         struct {
                 uint16_t year;
                 uint8_t month;
