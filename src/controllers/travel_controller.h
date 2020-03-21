@@ -6,7 +6,6 @@
 #include "gps_data.h"
 #include "storage.h"
 #include "travel.h"
-#include "travel_data_buffer.h"
 
 #define TRAVEL_LOG_BUFFER_LEN 512
 
