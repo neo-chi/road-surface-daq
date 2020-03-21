@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Arduino.h"
-//#include "FS.h"
-//#include "SD.h"
-//#include "SPI.h"
+#include "FS.h"
+#include "SD.h"
+#include "SPI.h"
 
 class Storage
 {
@@ -16,5 +16,5 @@ class Storage
                 void write(char *path, char *message);
                 void write(char *path, char **buffer, int buffer_size);
         private:
- //               fs::FS file_system;
+                fs::FS &file_system;
 };

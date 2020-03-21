@@ -5,9 +5,15 @@
  *
  * @returns storage object
  */
-Storage::Storage()
+Storage::Storage() : file_system(SD)
 {
-        Serial.println("Created storage.");
+        if (SD.begin()) {
+                Serial.println("Succesfully mounted SD card!");
+                Serial.println("Created storage.");
+        } else {
+                Serial.println("SD card mount failed!");
+                Serial.println("Storage will not work properly!");
+        }
 }
 
 /**
@@ -17,8 +23,14 @@ Storage::Storage()
  **/
 void Storage::mkdir(char *path)
 {
-        Serial.print("Made directory at: ");
-        Serial.println(path);
+        Serial.print("Making directory at ");
+        Serial.print(path);
+        Serial.print(" ... ");
+        if (file_system.mkdir(path)) {
+                Serial.println("Complete!");
+        } else {
+                Serial.println("Failure!");
+        }
 }
 
 /**

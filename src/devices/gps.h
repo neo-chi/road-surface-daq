@@ -13,7 +13,7 @@ class GPS
                 gps_data read();
                 void connect_to_satellites(long timeout = 0);
                 bool is_connected_to_satellites();
-                vehicle_state vehicle_state();
+                enum vehicle_state vehicle_state();
                 void update_cache(gps_cache type);
         private:
                 // SFE_UBLOX_GPS driver
