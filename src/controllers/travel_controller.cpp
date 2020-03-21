@@ -1,12 +1,22 @@
 #include "travel_controller.h"
-
+/**
+ * Default constructor.
+ **/
 TravelController::TravelController()
 {
         Serial.println("Created a travel controller.");
 }
 
+/**
+ * Returns a travel data entity.
+ *
+ * @param gps_data
+ * @param environmental_data
+ *
+ * @returns travel_data
+ **/
 travel_data TravelController::create_travel(gps_data gps,
-                        environmental_data environment)
+                                            environmental_data environment)
 {
         Serial.print("Creating travel entity...");
         travel_data travel;
@@ -23,11 +33,19 @@ travel_data TravelController::create_travel(gps_data gps,
         travel.pressure         = environment.pressure;
         travel.altitude         = environment.altitude;
         append_to_log_buffer(travel);
-        increment_log_buffer_length();
+        increment_log_buffer_index();
         Serial.println("Complete!");
         return travel;
 }
 
+/**
+ * Writes a this controller's travel buffer to temporary storage.
+ *
+ * Travel logs are must be stored temporarily until the device has access
+ * to uploading.
+ *
+ * @param storage: temporary storage data is written to.
+ **/
 void TravelController::log_travel(Storage storage)
 {
         Serial.print("Logging travel...");
@@ -38,12 +56,32 @@ void TravelController::log_travel(Storage storage)
         Serial.println("Complete!");
 }
 
+/**
+ * Uploads a travel log file to the specified php upload script.
+ *
+ * @param location URL of travel_upload.php script.
+ **/
 void TravelController::upload_travel(String location)
 {
         Serial.println("TODO: TravelController::upload_travel");
 }
 
-#pragma region private
+/**
+ * Returns true if the travel buffer is ready to be written to a log file.
+ *
+ * @returns bool
+ **/
+bool TravelController::buffer_is_full()
+{
+        if (log_buffer_index > 511)
+                return true;
+        else
+                return false;
+}
+
+/**
+ *  Helper function.
+ **/
 char *date_of(travel_data travel)
 {
         char *date = (char*)malloc(32 * sizeof(char));
@@ -53,6 +91,9 @@ char *date_of(travel_data travel)
                 travel.day);
 }
 
+/**
+ *  Helper function.
+ **/
 char *time_of(travel_data travel)
 {
         char *time = (char*)malloc(32 * sizeof(char));
@@ -62,14 +103,19 @@ char *time_of(travel_data travel)
                 travel.second);
 }
 
+/**
+ *  Helper function.
+ **/
 char *speed_of(travel_data travel)
 {
         char *speed = (char*)malloc(32 * sizeof(char));
         sprintf(speed, "%0.3lf",
                 travel.speed);
-
 }
 
+/**
+ *  Helper function.
+ **/
 char *location_of(travel_data travel)
 {
         char *location = (char*)malloc(32 * sizeof(char));
@@ -78,6 +124,9 @@ char *location_of(travel_data travel)
                 travel.longitude);
 }
 
+/**
+ *  Helper function.
+ **/
 char *environment_of(travel_data travel)
 {
         char *environment = (char*)malloc(32 * sizeof(char));
@@ -88,6 +137,9 @@ char *environment_of(travel_data travel)
                 travel.altitude);
 }
 
+/**
+ *  Helper function.
+ **/
 void TravelController::append_to_log_buffer(travel_data travel)
 {
         *log_buffer = (char *)malloc(32 * sizeof(char));
@@ -109,14 +161,18 @@ void TravelController::append_to_log_buffer(travel_data travel)
         free(environment);
 }
 
+/**
+ *  Helper function.
+ **/
 void TravelController::reset_log_buffer_head()
 {
-        log_buffer = log_buffer_ptr_initial;
+        log_buffer_index = 0;
 }
 
-void TravelController::increment_log_buffer_length()
+/**
+ *  Helper function.
+ **/
+void TravelController::increment_log_buffer_index()
 {
-        ++log_buffer;
-        log_buffer_length++;
+        log_buffer_index++;
 }
-#pragma endregion

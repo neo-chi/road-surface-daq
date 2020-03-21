@@ -2,6 +2,20 @@
 
 #include "Arduino.h"
 
+/**
+ * Aggregates relevant gps data.
+ *
+ * @year
+ * @month
+ * @day
+ * @hour
+ * @minute
+ * @second
+ * @millisecond
+ * @latitude
+ * @longitude
+ * @speed
+ **/
 struct gps_data {
         uint16_t year;
         uint8_t month;

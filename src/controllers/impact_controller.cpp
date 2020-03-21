@@ -1,14 +1,15 @@
 #include "impact_controller.h"
 
+/**
+ * Default constructor.
+ **/
 ImpactController::ImpactController()
 {
         Serial.println("Created an impact_controller.");
         Serial.println();
 }
 
-#pragma region public
-
-/*
+/**
  * Returns an impact data structure.
  *
  * @param {gps_data}           gps
@@ -18,7 +19,7 @@ ImpactController::ImpactController()
  *
  * @returns {impact_data}      impact date, time, location, environment,
  *                             vehicle speed, and acceleration.
- */
+ **/
 impact_data ImpactController::create_impact(
         gps_data gps,
         environmental_data environment,
@@ -47,7 +48,7 @@ impact_data ImpactController::create_impact(
         return impact;
 }
 
-/*
+/**
  * Writes impact content to a file in storage.
  * Directory and file name are predefined.
  * Directory: impact date.
@@ -55,7 +56,7 @@ impact_data ImpactController::create_impact(
  *
  * @param {Storage}     storage location written to.
  * @param {impact_data} impact information structure.
- */
+ **/
 void ImpactController::log_impact(Storage storage, impact_data impact)
 {
         char *date                       = date_of(impact);
@@ -91,17 +92,14 @@ void ImpactController::log_impact(Storage storage, impact_data impact)
         log_buffer = log_buffer_ptr_init;  // reset HEAD
         storage.write(log_file_path, log_buffer, log_buffer_length);
 }
-#pragma endregion public
 
-#pragma region private
-
-/*
+/**
  * Returns the date string YYYY-MM-DD from gps data.
  *
  * @param {impact_data} impact
  *
  * @returns {char*}     date of impact
- */
+ **/
 char *ImpactController::date_of(impact_data impact)
 {
         char *date = (char *)malloc(32 * sizeof(char));
@@ -112,13 +110,13 @@ char *ImpactController::date_of(impact_data impact)
         return date;
 }
 
-/*
+/**
  * Returns the time string HH:MM:SS.ss
  *
  * @param {impact_data} impact
  *
  * @returns {char*}     time of impact
- */
+ **/
 char *ImpactController::time_of(impact_data impact)
 {
         char *time = (char *)malloc(sizeof(char) * 32);
@@ -145,13 +143,13 @@ char *ImpactController::speed_of_vehicle_at(impact_data impact)
         return speed;
 }
 
-/*
+/**
  * Returns the impact location string.
  *
  * @param {impact_data} impact
  *
  * @returns {char*}     location of impact
- */
+ **/
 char *ImpactController::location_of(impact_data impact)
 {
         char *location = (char *)malloc(sizeof(char) * 32);
@@ -161,13 +159,13 @@ char *ImpactController::location_of(impact_data impact)
         return location;
 }
 
-/*
+/**
  * Returns the impact environment string.
  *
  * @param {impact_data} impact
  *
  * @returns {char}      impact environment information
- */
+ **/
 char *ImpactController::environment_of(impact_data impact)
 {
         char *environment = (char *)malloc(sizeof(char) * 32);
@@ -178,13 +176,14 @@ char *ImpactController::environment_of(impact_data impact)
                 impact.altitude);
         return environment;
 }
-/*
+
+/**
  * Returns the array of acceleration data point strings.
  *
  * @param {impact_data} impact
  *
  * @returns {char**}    acceleration data set
- */
+ **/
 char **ImpactController::acceleration_response_of(impact_data impact)
 {
         const int num_acceleration_points = 512;
@@ -206,11 +205,11 @@ char **ImpactController::acceleration_response_of(impact_data impact)
         return acceleration_set;
 }
 
-/*
+/**
  * Add data to the log for file writing.
  *
  * @param {char*} message
- */
+ **/
 void ImpactController::append_to_log(char *message)
 {
         Serial.println("Added to log!");
@@ -220,4 +219,3 @@ void ImpactController::append_to_log(char *message)
         log_buffer_length++;
         Serial.println("Added to log complete!");
 }
-#pragma endregion

@@ -2,27 +2,41 @@
 
 /**
  * Environmental Sensor Constructor
- *
- //* @returns EnvironmentSensor
- */
+ **/
 EnvironmentalSensor::EnvironmentalSensor()
 {
         Serial.println("Created an environmental sensor.");
+        if (!cache_is_initialized) {
+                update_cache();
+                cache_is_initialized = true;
+        }
 }
 
 /**
  * Get this sensor's data as a structure
  *
  * @returns struct environmental_data
- */
+ **/
 environmental_data EnvironmentalSensor::read()
 {
-        Serial.print("Reading environmental sensor... ");
-        environmental_data env_data;
-        env_data.temperature = 1;
-        env_data.humidity = 2;
-        env_data.pressure = 3;
-        env_data.altitude = 4;
+        if (cache_is_initialized) {
+                return cache;
+        } else {
+                update_cache();
+                cache_is_initialized = true;
+                return cache;
+        }
+}
+
+/**
+ * Refreshes environmental data cache with current values.
+ **/
+void EnvironmentalSensor::update_cache()
+{
+        Serial.print("Updating environmental sensor cache... ");
+        cache.temperature       = 1;
+        cache.humidity          = 2;
+        cache.pressure          = 3;
+        cache.altitude          = 4;
         Serial.println("Complete!");
-        return env_data;
 }

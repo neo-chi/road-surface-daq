@@ -12,7 +12,7 @@ class Storage
                 void mkdir(char *path);
                 void mv(char *path_from, char *path_to);
                 void rm(char *path);
-                void read(char *path, char **out);
+                char **read(char *path);
                 void write(char *path, char *message);
                 void write(char *path, char **buffer, int buffer_size);
         private:
