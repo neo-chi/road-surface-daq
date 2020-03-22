@@ -22,9 +22,9 @@ struct gps_data {
         uint8_t day;
         uint8_t hour;
         uint8_t minute;
-        uint8_t second;
-        uint8_t millisecond;
-        float latitude;
-        float longitude;
-        float speed;
+        uint16_t second;
+        uint16_t millisecond;
+        int32_t latitude;
+        int32_t longitude;
+        int32_t speed;
 };

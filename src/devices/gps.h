@@ -4,7 +4,7 @@
 #include "gps_data.h"
 #include "gps_cache_enum.h"
 #include "gps_vehicle_state_enum.h"
-//#include "SparkFun_Ublox_Arduino_Library.h"
+#include "SparkFun_Ublox_Arduino_Library.h"
 
 class GPS
 {
@@ -16,9 +16,8 @@ class GPS
                 enum vehicle_state vehicle_state();
                 void update_cache(gps_cache type);
         private:
-                // SFE_UBLOX_GPS driver
-
-                gps_data data;
+                SFE_UBLOX_GPS driver;
                 bool cache_is_initialized = false;
+                gps_data data;
                 gps_data cache;
 };
