@@ -1,5 +1,7 @@
-// [ ]  GPS::vehicles_is_moving()
 #include "gps.h"
+#include "Wire.h"
+
+#define NAVIGATION_FREQ 3
 
 /**
  * GPS constructor
@@ -8,6 +10,11 @@
  **/
 GPS::GPS()
 {
+        Wire.begin();
+        driver.begin();
+        driver.setI2COutput(COM_TYPE_UBX);
+        driver.setNavigationFrequency(NAVIGATION_FREQ);
+        driver.saveConfiguration();
         Serial.println("Created a gps.");
 }
 
@@ -18,12 +25,39 @@ GPS::GPS()
  **/
 gps_data GPS::read()
 {
+        if (!cache_is_initialized) {
+                update_cache(year);
+                update_cache(month);
+                update_cache(day);
+                update_cache(hour);
+                update_cache(minute);
+                cache_is_initialized = true;
+                Serial.println("Cache initialized!");
+        }
+        Serial.println("Reading gps...");
+        Serial.print("Reading from cache...");
         data = cache;
-        data.second = 5;        // [ ] Read from driver
-        data.millisecond = 6;   // [ ] Read from driver
-        data.latitude = 7;      // [ ] Read from driver
-        data.longitude = 8;     // [ ] Read from driver
-        data.speed = 9;         // [ ] Read from driver
+        Serial.println("Complete!");
+
+        Serial.print("Reading second ...");
+        data.second = driver.getSecond();
+        Serial.println("Complete!");
+
+        Serial.print("Reading millisecond...");
+        data.millisecond = driver.getMillisecond();
+        Serial.println("Complete!");
+
+        Serial.print("Reading latitude...");
+        data.latitude = driver.getLatitude();
+        Serial.println("Complete!");
+
+        Serial.print("Reading longitude...");
+        data.longitude = driver.getLongitude();
+        Serial.println("Complete!");
+
+        Serial.print("Reading speed...");
+        data.speed = driver.getGroundSpeed();
+        Serial.println("Complete!");
         return data;
 }
 
@@ -34,12 +68,12 @@ void GPS::connect_to_satellites(long timeout)
 {
         if (timeout == 0) {
                 // attempt to connect forever
-                long elapsed_time = 0;
-                uint8_t seconds_waiting = 0;
-                const int MAX_WAIT_SECONDS = 10;
-                Serial.print("Waitng until satellite connection is received");
+                long            elapsed_time            = 0;
+                uint8_t         seconds_waiting         = 0;
+                const int       MAX_WAIT_SECONDS        = 10;
+                Serial.print("Waiting until satellite connection is received");
                 while (!(this->is_connected_to_satellites())) {
-                        if (seconds_waiting > MAX_WAIT_SECONDS) {
+                        if (seconds_waiting >= MAX_WAIT_SECONDS) {
                                 seconds_waiting = 0;
                                 Serial.println();
                         }
@@ -51,8 +85,8 @@ void GPS::connect_to_satellites(long timeout)
 
                 }
         } else {
-                long elapsed_time = 0;
-                uint8_t seconds_waiting = 0;
+                long            elapsed_time            = 0;
+                uint8_t         seconds_waiting         = 0;
                 Serial.printf("Waiting %d milliseconds until satellite connection is received.");
                 while (millis() - elapsed_time < timeout) {
                         if (seconds_waiting >= 3)
@@ -73,8 +107,12 @@ void GPS::connect_to_satellites(long timeout)
  **/
 bool GPS::is_connected_to_satellites()
 {
-        // [ ] GPS::is_connected_to_satellites()
-        return false;
+        uint8_t num_satellites = driver.getSIV();
+        Serial.printf("Connected to %d satellites\n", num_satellites);
+        if (num_satellites > 2)
+                return true;
+        else
+                return false;
 }
 
 /**
@@ -87,17 +125,17 @@ bool GPS::is_connected_to_satellites()
  **/
 vehicle_state GPS::vehicle_state()
 {
-        int speed = 1001; // [ ] remove me for driver implementation
         Serial.print("Checking vehicle movement state... ");
         if (is_connected_to_satellites()) {
-                if (speed > 1000) {
-                        Serial.println("Vehicle is moving!");
+                if (data.speed > 1000) { // 1 meter/second
+                Serial.println("Vehicle is moving!");
                         return moving;
                 } else {
                         Serial.println("Vehicle is idle!");
                         return idle;
                 }
         } else {
+                Serial.println("No GPS connection. Vehicle state unknown!");
                 return unknown;
         }
 
@@ -113,32 +151,27 @@ void GPS::update_cache(gps_cache type)
         switch(type) {
         case year:
                 Serial.print("Updating cached year... ");
-                cache.year = 2020;
-                //> cache.year = driver.getYear();
+                cache.year = driver.getYear();
                 Serial.println("Complete!");
                 break;
         case month:
                 Serial.print("Updating cached month... ");
-                cache.month = 1;
-                //> cache.month = driver.getMonth();
+                cache.month = driver.getMonth();
                 Serial.println("Complete!");
                 break;
         case day:
                 Serial.print("Updating cached day... ");
-                cache.day = 2;
-                //> cache.day = driver.getDay();
+                cache.day = driver.getDay();
                 Serial.println("Complete!");
                 break;
         case hour:
                 Serial.print("Updating cached hour... ");
-                cache.hour = 3;
-                //> cache.hour = driver.getHour();
+                cache.hour = driver.getHour();
                 Serial.println("Complete!");
                 break;
         case minute:
                 Serial.print("Updating cached minute... ");
-                cache.minute = 4;
-                //> cache.minute = driver.getMinute();
+                cache.minute = driver.getMinute();
                 Serial.println("Complete!");
                 break;
         default:
