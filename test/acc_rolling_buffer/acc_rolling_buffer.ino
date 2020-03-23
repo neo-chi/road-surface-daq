@@ -6,6 +6,10 @@
 
 #include "Adafruit_LIS3DH.h"
 Adafruit_LIS3DH accelerometer;
+const size_t 	acc_buf_len 		= 5;
+float 		x[acc_buf_len];
+float 		y[acc_buf_len];
+float 		z[acc_buf_len];
 
 int global_variable = 0;
 
@@ -55,18 +59,36 @@ void TaskPrintLn_1(void *pvParameters)
 	accelerometer.setRange(LIS3DH_RANGE_16_G);
 	accelerometer.begin(LIS3DH_DEFAULT_ADDRESS);
 	accelerometer.printSensorDetails();
-	float x;
-	float y;
-	float z;
 
 	for (;;)  // A task *MUST* never return or exit.
 	{
+		read_accelerometer();
+		for (size_t i = 0; i < acc_buf_len; i++) {
+			Serial.printf("x: %0.3f\ty: %0.3f\tz: %0.3f\n", x[i], y[i], z[i]);
+		}
+		delay(2000);
+	}
+}
+
+/**
+ * Store accelerometer batch-read to individual axis buffers.
+ *
+ * @see const size_t acc_buf_len
+ * @see float x[acc_buf_len]
+ * @see float y[acc_buf_len]
+ * @see float z[acc_buf_len]
+ *
+ * @returns x  global x[acc_buf_len]
+ * @returns y  global y[acc_buf_len]
+ * @returns z  global z[acc_buf_len]
+ **/
+void read_accelerometer()
+{
+	for (size_t i = 0; i < acc_buf_len; i++) {
 		accelerometer.read();
-		x = accelerometer.x_g;
-		y = accelerometer.y_g;
-		z = accelerometer.z_g;
-		Serial.printf("x: %0.3f\ty: %0.3f\tz: %0.3f\n", x, y, z);
-		delay(1000);
+		x[i] = accelerometer.x_g;
+		y[i] = accelerometer.y_g;
+		z[i] = accelerometer.z_g;
 	}
 }
 
@@ -81,6 +103,7 @@ void TaskPrintLn_2(void *pvParameters)
 		Serial.println();
 		Serial.println("Task 2 doing nothing.");
 		Serial.println();
-		delay(5000);
+		delay(10000);
 	}
 }
+
