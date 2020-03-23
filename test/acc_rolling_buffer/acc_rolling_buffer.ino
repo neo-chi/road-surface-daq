@@ -4,7 +4,8 @@
 #define ARDUINO_RUNNING_CORE 1
 #endif
 
-#include "Arduino.h"
+#include "Adafruit_LIS3DH.h"
+Adafruit_LIS3DH accelerometer;
 
 int global_variable = 0;
 
@@ -22,7 +23,7 @@ void setup()
 	xTaskCreatePinnedToCore(
 		TaskPrintLn_1
 		,	"TaskPrintLn_1"			// A name for people to understand
-		,	1024				// Stack size
+		,	2048				// Stack size
 		,	NULL
 		,	2				// Priority [Highest 3 -> Lowest 0]
 		,	NULL
@@ -50,15 +51,22 @@ void TaskPrintLn_1(void *pvParameters)
 	(void) pvParameters;
 
 	// Task initialization...
+	accelerometer.setDataRate(LIS3DH_DATARATE_LOWPOWER_1K6HZ);
+	accelerometer.setRange(LIS3DH_RANGE_16_G);
+	accelerometer.begin(LIS3DH_DEFAULT_ADDRESS);
+	accelerometer.printSensorDetails();
+	float x;
+	float y;
+	float z;
 
 	for (;;)  // A task *MUST* never return or exit.
 	{
-		Serial.printf("Task 1 global_variable++\n");
-		global_variable++;
-		Serial.printf("Task 1 set global var: %d\n", global_variable);
-		Serial.printf("Task 1 Waiting...\n");
-		Serial.printf("\n");
-		vTaskDelay(10000);  // 12 seconds
+		accelerometer.read();
+		x = accelerometer.x_g;
+		y = accelerometer.y_g;
+		z = accelerometer.z_g;
+		Serial.printf("x: %0.3f\ty: %0.3f\tz: %0.3f\n", x, y, z);
+		delay(1000);
 	}
 }
 
@@ -70,11 +78,9 @@ void TaskPrintLn_2(void *pvParameters)
 
 	for (;;)
 	{
-		Serial.printf("Task 2 global_variable++\n");
-		global_variable++;
-		Serial.printf("Task 2 set global var: %d\n", global_variable);
-		Serial.printf("Task 2 Waiting...\n");
-		Serial.printf("\n");
-		vTaskDelay(5000);  // 1.5 seconds
+		Serial.println();
+		Serial.println("Task 2 doing nothing.");
+		Serial.println();
+		delay(5000);
 	}
 }
