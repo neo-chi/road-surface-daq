@@ -16,16 +16,15 @@ Accelerometer::Accelerometer()
 accelerometer_data *Accelerometer::read()
 {
         Serial.printf("Reading acceleromter...");
-        for (int i = 0; i < 512; i++) {
-                float x = 1 * i;
-                float y = 2 * i;
-                float z = 3 * i;
-                this->buffer[i].x = x;
-                this->buffer[i].y = y;
-                this->buffer[i].z = z;
+        for (int i = 0; i < BUF_LEN; i++) {
+		//driver.read();
+                buffer[i].x = driver.x_g;
+                buffer[i].y = driver.y_g;
+                buffer[i].z = driver.z_g;
         }
         Serial.print("Complete!\n");
-        return this->buffer;
+	//Serial.print(buf);
+        return buffer;
 }
 
 /**
@@ -35,8 +34,8 @@ accelerometer_data *Accelerometer::read()
  **/
 int Accelerometer::size_buffer()
 {
-        Serial.printf("Getting size of accelerometer buffer.\n");
-        return this->buffer_size;
+        //Serial.printf("Getting size of accelerometer buffer.\n");
+        return buffer_size;
 }
 
 /**
@@ -44,6 +43,7 @@ int Accelerometer::size_buffer()
  **/
 void Accelerometer::unlatch_interrupt()
 {
+	driver.configurationRead(INT1_SRC);
         Serial.printf("Unlactched interrupt!\n");
 }
 

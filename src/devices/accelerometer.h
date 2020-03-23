@@ -4,6 +4,8 @@
 #include "accelerometer_data.h"
 #include "LIS3DH.h"
 
+#define BUF_LEN 32
+
 class Accelerometer
 {
         public:
@@ -14,7 +16,8 @@ class Accelerometer
                 volatile bool           interrupt_is_latched();
                 bool                    buffer_is_full();
         private:
-                const LIS3DH            driver;
-                accelerometer_data      buffer[512];
-                const int               buffer_size = 512;
+                LIS3DH            	driver;
+                accelerometer_data      buffer[BUF_LEN];
+                const int               buffer_size = BUF_LEN;
+		size_t 			buffer_ptr = 0;
 };
