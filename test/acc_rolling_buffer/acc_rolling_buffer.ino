@@ -24,13 +24,16 @@ static char		impact_log[impact_log_len];
 
 static const size_t	capture_buf_len			= 10;
 static int		capture_buf[capture_buf_len];
+
 static const size_t 	rolling_buf_len			= capture_buf_len;
-static size_t		rolling_buf_idx 		= 0;
-int 			rolling_buf_val  		= 0;
+static int		rolling_buf[rolling_buf_len];
+size_t			rolling_buf_idx 		= 0;
+int			rolling_buf_val  		= 0;
+int			new_value_idx			= 0;
 
 // define two tasks for println1 and println2
-void TaskPrintLn_1(void *pvParameters);
-void TaskPrintLn_2(void *pvParameters);
+void accelerometer_rolling_buffer(void *pvParameters);
+void main_control(void *pvParameters);
 
 // setup function runs once when you press reset or power the board.
 void setup()
@@ -40,8 +43,8 @@ void setup()
 
         // Now set up two tasks to run indepenedently.
 	xTaskCreatePinnedToCore(
-		TaskPrintLn_1
-		,	"TaskPrintLn_1"			// A name for people to understand
+		accelerometer_rolling_buffer
+		,	"accelerometer_rolling_buffer"			// A name for people to understand
 		,	2048				// Stack size
 		,	NULL
 		,	2				// Priority [Highest 3 -> Lowest 0]
@@ -49,8 +52,8 @@ void setup()
 		,	ARDUINO_RUNNING_CORE);
 
 	xTaskCreatePinnedToCore(
-		TaskPrintLn_2				// Task function pointer
-		,	"TaskPrintLn_2"			// Task name for people
+		main_control				// Task function pointer
+		,	"main_control"			// Task name for people
 		,	2048				// Stack size
 		,	NULL				// Paramaters
 		,	1				// Priority
@@ -65,7 +68,7 @@ void loop()
 	// Empty. Things done in Tasks.
 }
 
-void TaskPrintLn_1(void *pvParameters)
+void accelerometer_rolling_buffer(void *pvParameters)
 {
 	(void) pvParameters;
 
@@ -75,71 +78,21 @@ void TaskPrintLn_1(void *pvParameters)
 	accelerometer.begin(LIS3DH_DEFAULT_ADDRESS);
 	accelerometer.printSensorDetails();
 
-	int rolling_buf[rolling_buf_len];
-	int capture[capture_buf_len];
-	int value = 0;
-	int i = 0;
-	int newest_val_idx = 0;
-
-	bool first = true;
-
 	for (;;)  // A task *MUST* never return or exit.
 	{
-		if (rolling_buf_full()) {
-
-			// simulate capture
-			int capture_len = 0;
-			for (int oldest_val_idx = newest_val_idx; oldest_val_idx < rolling_buf_len; oldest_val_idx++) {
-				#if DEBUG_VERBOSE
-				Serial.println();
-				Serial.println("Working from newest value of rolling buffer");
-				Serial.printf("oldest_val_idx: %d\trolling buf val: %d\n", oldest_val_idx, rolling_buf[oldest_val_idx]);
-				Serial.printf("newest_val_idx: %d\n", newest_val_idx);
-				Serial.println();
-				#endif
-				capture_buf[capture_len] = rolling_buf[oldest_val_idx];
-				capture_len++;
-			}
-
-			for (int oldest_val_idx = 0; oldest_val_idx < newest_val_idx; oldest_val_idx++) {
-				#if DEBUG_VERBOSE
-				Serial.println();
-				Serial.println("Working from start of rolling buffer");
-				Serial.printf("oldest_val_idx: %d\trolling buf val: %d\n", oldest_val_idx, rolling_buf[oldest_val_idx]);
-				Serial.printf("newest_val_idx: %d\n", newest_val_idx);
-				Serial.println();
-				#endif
-				capture_buf[capture_len] = rolling_buf[oldest_val_idx];
-				capture_len++;
-			}
-
-			// generate print statement
-			size_t bytes_written = 0;
-			size_t offset = 0;
-			for (int i = 0; i < capture_len; i++) {
-				bytes_written = sprintf(impact_log + offset, "%03d ", capture_buf[i]);
-				offset       += bytes_written;
-			}
-			#if DEBUG
-			Serial.printf("Capture: [ %s]\n", impact_log);
-			#endif
-
-			// roll the buffer
-			rolling_buf[newest_val_idx] = value;
-			newest_val_idx++;
-			value++;
-			if (newest_val_idx == rolling_buf_len)
-				newest_val_idx = 0;
-
+		if (rolling_buffer_is_full()) {
+			//Serial.println("Buffer is full");
+			//Serial.print("!");
+			capture_rolling_buffer();
+			// read_accelerometer()
+			roll_buffer();  // adds new accelerometer values to rollling buffer
 		}
 
-
-		 while (!rolling_buf_full()) {
-			rolling_buf[i]  = value; // read acclerometer
-			rolling_buf_idx = i;
-			Serial.printf("rolling_buf[%d] = %d\n", i, rolling_buf[i]);
-			i++;
-			value++;
+		if (!rolling_buffer_is_full()) {
+			//Serial.println("Rolling Buffer Not Full");
+			fill_rolling_buffer();
+			// read_accelerometer()
+			//roll_buffer();
 		}
 
 		//read_accelerometer();
@@ -148,9 +101,100 @@ void TaskPrintLn_1(void *pvParameters)
 	}
 }
 
-bool rolling_buf_full()
+/**
+ * Returns true if rolling buffer has been filled with accelerometer values.
+ *
+ * @param rolling_buf_idx
+ * @param rolling_buf_len
+ *
+ * @returns bool
+ **/
+bool rolling_buffer_is_full()
 {
-	return rolling_buf_idx + 1 >= rolling_buf_len;
+	// Serial.printf("rolling_buf_idx: %d\trolling_buf_len: %d\n", rolling_buf_idx, rolling_buf_len);
+	return rolling_buf_idx >= rolling_buf_len;
+}
+
+/**
+ * Sets the capture buffer values to the rolling buffer values ordered from
+ * oldest values to newest values.
+ *
+ * @param rolling_buf		input
+ * @param capture_buf		output
+ * @param new_value_idx		index of newest value in rolling buffer
+ * @param rolling_buf_len	size of rolling buffer
+ **/
+void capture_rolling_buffer()
+{
+
+	int len = 0;
+	// Populate capture buffer with oldest rolling buffer values first.
+	for (int i = new_value_idx; i < rolling_buf_len; i++) {
+		capture_buf[len] = rolling_buf[i];
+		len++;
+
+		#if DEBUG_VERBOSE
+		Serial.println();
+		Serial.println("Working from newest value of rolling buffer");
+		Serial.printf("old value index: %d\trolling buf val: %d\n", i, rolling_buf[i]);
+		Serial.printf("new value index: %d\n", new_value_idx);
+		#endif
+	}
+	// Then populate the rest of the capture buffer with new rolling buffer values.
+	for (int i = 0; i < new_value_idx; i++) {
+		capture_buf[len] = rolling_buf[i];
+		len++;
+
+		#if DEBUG_VERBOSE
+		Serial.println();
+		Serial.println("Working from start of rolling buffer");
+		Serial.printf("old value index: %d\trolling buf val: %d\n", i, rolling_buf[i]);
+		Serial.printf("new value index: %d\n", new_value_idx);
+		#endif
+	}
+
+	#if DEBUG
+	size_t bytes_written = 0;
+	size_t offset = 0;
+	for (int i = 0; i < capture_buf_len; i++) {
+		bytes_written = sprintf(impact_log + offset, "%03d ", capture_buf[i]);
+		offset       += bytes_written;
+	}
+	Serial.printf("Capture: [ %s]\n", impact_log);
+	#endif
+}
+
+/**
+ *
+ **/
+void roll_buffer()
+{
+	// Add a new value to the rolling buffer
+	rolling_buf[new_value_idx] = rolling_buf_val;
+
+	// Specify where the newest values begin.
+	new_value_idx++;
+	rolling_buf_val++;
+
+	// Don't go out of bounds...
+	if (new_value_idx == rolling_buf_len)
+		new_value_idx = 0;
+}
+
+/**
+ * Adds values to the rolling buffer until it is full and ready for capture.
+ *
+ * @param rolling_buf
+ * @param rolling_buf_idx
+ * @param rolling_buf_val	value assigned to rolling buffer
+ **/
+void fill_rolling_buffer()
+{
+	while (!rolling_buffer_is_full()) {
+		rolling_buf[rolling_buf_idx] = rolling_buf_val;
+		rolling_buf_idx++;
+		rolling_buf_val++;
+	}
 }
 
 /**
@@ -213,7 +257,7 @@ void read_accelerometer()
 	}
 }
 
-void TaskPrintLn_2(void *pvParameters)
+void main_control(void *pvParameters)
 {
 	(void) pvParameters;
 
