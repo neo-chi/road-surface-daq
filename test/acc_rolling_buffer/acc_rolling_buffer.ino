@@ -4,14 +4,23 @@
 #define ARDUINO_RUNNING_CORE 1
 #endif
 
-#include "Adafruit_LIS3DH.h"
-Adafruit_LIS3DH accelerometer;
-const size_t 	acc_buf_len 		= 5;
-float 		x[acc_buf_len];
-float 		y[acc_buf_len];
-float 		z[acc_buf_len];
+/********************************CONFIGURATION*********************************/
+/**
+ * DEBUG: enable or disable serial monitor messages.
+ **/
+#define DEBUG 0  // 0 -> Enable serial monitor messages.
+#define print_impact	Serial.printf("%s", impact_log);
+/******************************************************************************/
 
-int global_variable = 0;
+
+#include "Adafruit_LIS3DH.h"
+static Adafruit_LIS3DH		accelerometer;
+static const size_t		acc_buf_len			= 5;
+static float			x[acc_buf_len];
+static float			y[acc_buf_len];
+static float			z[acc_buf_len];
+static const size_t		impact_log_len			= 2048;  // 2kB
+static char			impact_log[impact_log_len];
 
 // define two tasks for println1 and println2
 void TaskPrintLn_1(void *pvParameters);
@@ -63,10 +72,27 @@ void TaskPrintLn_1(void *pvParameters)
 	for (;;)  // A task *MUST* never return or exit.
 	{
 		read_accelerometer();
+		size_t len_offset 	 = 0;
+		size_t bytes_written 	 = 0;
 		for (size_t i = 0; i < acc_buf_len; i++) {
-			Serial.printf("x: %0.3f\ty: %0.3f\tz: %0.3f\n", x[i], y[i], z[i]);
+			bytes_written = sprintf(impact_log + len_offset,
+						"x: %0.3f\ty: %0.3f\tz: %0.3f\n",
+						 x[i],
+						 y[i],
+						 z[i]);
+			len_offset += bytes_written;
 		}
 		delay(2000);
+
+		// Display log_impact buffer and file size.
+		#if DEBUG
+		bytes_written = len_offset;
+		Serial.printf("-------------------------------------------\n");
+		//Serial.printf("%s", impact_log);
+		print_impact;  // using preprocessor macro
+		Serial.printf("Impact Log File Size: %u\n", len_offset);
+		Serial.printf("-------------------------------------------\n");
+		#endif
 	}
 }
 
