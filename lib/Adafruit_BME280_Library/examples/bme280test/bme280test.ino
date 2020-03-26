@@ -35,14 +35,15 @@ Adafruit_BME280 bme; // I2C
 unsigned long delayTime;
 
 void setup() {
-    Serial.begin(9600);
+    delay(1000);
+    Serial.begin(115200);
     while(!Serial);    // time to get serial running
     Serial.println(F("BME280 test"));
 
     unsigned status;
-    
+
     // default settings
-    status = bme.begin();  
+    status = bme.begin();
     // You can also pass in a Wire library object like &Wire2
     // status = bme.begin(0x76, &Wire2)
     if (!status) {
@@ -54,7 +55,7 @@ void setup() {
         Serial.print("        ID of 0x61 represents a BME 680.\n");
         while (1) delay(10);
     }
-    
+
     Serial.println("-- Default Test --");
     delayTime = 1000;
 
@@ -62,7 +63,7 @@ void setup() {
 }
 
 
-void loop() { 
+void loop() {
     printValues();
     delay(delayTime);
 }

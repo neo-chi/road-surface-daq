@@ -18,8 +18,9 @@
  *
  */
 
-#ifndef __BME280_H__
-#define __BME280_H__
+//#ifndef __BME280_H__
+//#define __BME280_H__
+#pragma once
 
 #include "Arduino.h"
 
@@ -368,5 +369,3 @@ protected:
   };
   ctrl_hum _humReg; //!< hum register object
 };
-
-#endif
