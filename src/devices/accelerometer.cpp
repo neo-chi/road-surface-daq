@@ -1,11 +1,31 @@
+/*******************************************************************************
+ * @file	accelerometer.cpp
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-03-25
+ * @see		https://github.com/reecechimento/road-surface-daq
+/******************************************************************************/
 #include "accelerometer.h"
 
 /**
  * Default constructor.
+ *
+ * @note to configure this accelerometer, edit:
+ * 			/src/devices/accelerometer.cpp
+ * 			-> Accelerometer::Accelerometer()
+ *
+ * @returns configured accelerometer.
  **/
 Accelerometer::Accelerometer()
 {
-        Serial.println("Created an accelerometer.");
+        Serial.printf("initializing accelerometer...\n");
+	Serial.printf("accelerometer power mode:\tlow-power\n");
+	Serial.printf("accelerometer datarate:\t1.6 KHz\n");
+	Serial.printf("accelerometer range:\t8 G\n");
+	driver.setDataRate(LIS3DH_DATARATE_LOWPOWER_1K6HZ);
+	driver.setRange(LIS3DH_RANGE_8_G);
+	driver.begin(LIS3DH_DEFAULT_ADDRESS);
+	Serial.printf("accelerometer initialization complete!");
 }
 
 /**
@@ -15,15 +35,14 @@ Accelerometer::Accelerometer()
  **/
 accelerometer_data *Accelerometer::read()
 {
-        Serial.printf("Reading acceleromter...");
+        Serial.printf("Reading accelerometer...");
         for (int i = 0; i < BUF_LEN; i++) {
-		//driver.read();
+		driver.read();
                 buffer[i].x = driver.x_g;
                 buffer[i].y = driver.y_g;
                 buffer[i].z = driver.z_g;
         }
         Serial.print("Complete!\n");
-	//Serial.print(buf);
         return buffer;
 }
 
@@ -32,10 +51,9 @@ accelerometer_data *Accelerometer::read()
  *
  * @return int acceleration buffer size.
  **/
-int Accelerometer::size_buffer()
+int  Accelerometer::buffer_length()
 {
-        //Serial.printf("Getting size of accelerometer buffer.\n");
-        return buffer_size;
+	return buffer_len;
 }
 
 /**
@@ -43,8 +61,8 @@ int Accelerometer::size_buffer()
  **/
 void Accelerometer::unlatch_interrupt()
 {
-	driver.configurationRead(INT1_SRC);
-        Serial.printf("Unlactched interrupt!\n");
+	// [ ] Implement this!
+	Serial.printf("Unlactched interrupt!\n");
 }
 
 /**
@@ -56,7 +74,8 @@ void Accelerometer::unlatch_interrupt()
  **/
 volatile bool Accelerometer::interrupt_is_latched()
 {
-        Serial.printf("Accelerometer buffer is latched.");
+	// [ ] Implement this!
+	Serial.printf("Accelerometer buffer is latched.");
         return true;
 }
 
@@ -67,6 +86,6 @@ volatile bool Accelerometer::interrupt_is_latched()
  **/
 bool Accelerometer::buffer_is_full()
 {
-        Serial.printf("Accelerometer buffer is full!");
-        return true;
+	Serial.printf("Accelerometer buffer is full!");
+	return true;
 }

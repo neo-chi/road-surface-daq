@@ -1,23 +1,31 @@
+/******************************************************************************
+ * @file	accelerometer.h
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-03-25
+ * @see		https://github.com/reecechimento/road-surface-daq
+/******************************************************************************/
 #pragma once
 
 #include "Arduino.h"
 #include "accelerometer_data.h"
-#include "LIS3DH.h"
+#include "Adafruit_LIS3DH.h"
 
-#define BUF_LEN 32
+#define BUF_LEN 1600  // 1600 samples
 
 class Accelerometer
 {
         public:
                 Accelerometer();
                 accelerometer_data      *read();
-                int                     size_buffer();
+                int                     buffer_length();
                 void                    unlatch_interrupt();
                 volatile bool           interrupt_is_latched();
                 bool                    buffer_is_full();
         private:
-                LIS3DH            	driver;
+                Adafruit_LIS3DH         driver;
                 accelerometer_data      buffer[BUF_LEN];
-                const int               buffer_size = BUF_LEN;
-		size_t 			buffer_ptr = 0;
+                int			buffer_len		= BUF_LEN;
+		size_t 			buffer_pointer		= 0;
+		volatile bool		interrupt_has_occured	= false;;
 };
