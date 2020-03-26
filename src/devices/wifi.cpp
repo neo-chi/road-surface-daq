@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * @file	wifi.cpp
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-03-26
+ * @see		https://github.com/reecechimento/road-surface-daq
+/******************************************************************************/
 #include "wifi.h"
 
 /**
@@ -8,23 +15,26 @@
  *
  * @returns WiFi object
  **/
-WiFi::WiFi(char *ssid, char *psk)
+WiFiManager::WiFiManager(char *ssid, char *psk)
 {
         this->set_ssid(ssid);
         this->set_psk(psk);
         Serial.println("Created a WiFi connector.");
 }
+
 /**
  * Attempt WiFi connection.
  *
  * @param timeout: end connection attempt after time in milliseconds.
- **/
-void WiFi::connect(long timeout)
-{
+ **/ void WiFiManager::connect(long timeout) {
         // Display network details.
         Serial.println("Connecting to WiFi: ");
         Serial.printf("SSID:\t%s\n", this->network_conf.ssid);
         Serial.printf("PSK:\t%s\n", this->network_conf.psk);
+
+        WiFi.mode(WIFI_OFF);
+        WiFi.mode(WIFI_STA);
+        WiFi.begin(network_conf.ssid, network_conf.psk);
 
         // Connection attempt **WITH** timeout.
         if (timeout > 0) {
@@ -42,11 +52,15 @@ void WiFi::connect(long timeout)
                                 seconds_waiting = 0;
                         }
                         if (elapsed_time > timeout) {  // Connection was **UNSUCCESSFUL**.
-                                Serial.println("Connection attempt failed");
                                 break;
                         }
                 }  // A connection was **SUCCESSFUL**.
-                Serial.println("WiFi connected!");
+                if (this->is_connected()) {
+                        Serial.println("WiFi connected!");
+                } else {
+                        Serial.println("WiFi connection failed!");
+                        WiFi.disconnect();
+                }
         // Connection attempt **WITHOUT** timout.
         } else {
                 long elapsed_time = 0;
@@ -71,9 +85,10 @@ void WiFi::connect(long timeout)
 /**
  * Disable WiFi.
  **/
-void WiFi::disconnect()
+void WiFiManager::disconnect()
 {
-        Serial.println("WiFi disconnected!");
+        WiFi.mode(WIFI_OFF);
+        Serial.printf("WiFi disconnected!");
 }
 
 /**
@@ -81,9 +96,12 @@ void WiFi::disconnect()
  *
  * @returns bool
  **/
-bool WiFi::is_connected()
+bool WiFiManager::is_connected()
 {
-        return false;
+        if (WiFi.status() == WL_CONNECTED)
+                return true;
+        else
+                return false;
 }
 
 /**
@@ -91,7 +109,7 @@ bool WiFi::is_connected()
  *
  * @param ssid wifi network name.
  **/
-void WiFi::set_ssid(char *ssid)
+void WiFiManager::set_ssid(char *ssid)
 {
         Serial.printf("Updated WiFi SSID to %s\n", ssid);
         strcpy(this->network_conf.ssid, ssid);
@@ -102,9 +120,9 @@ void WiFi::set_ssid(char *ssid)
  *
  * @param psk wifi network password.
  */
-void WiFi::set_psk(char *psk)
+void WiFiManager::set_psk(char *psk)
 {
         Serial.printf("Updated WiFi PSK to %s\n", psk);
         strcpy(this->network_conf.psk, psk);
-
 }
+

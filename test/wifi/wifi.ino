@@ -6,16 +6,15 @@ void setup()
         delay(1000);  // UNIX
         Serial.begin(115200);  // debugging
 
-        /** @test Constructor */
-        WiFi wifi("__SSID__", "__PSK__");
-        if (!wifi.is_connected()) {
-                wifi.connect();
-        }
-        wifi.disconnect();
-        wifi.set_ssid("fbi van");
-        wifi.set_psk("agent_smith");
-        wifi.connect(20000);
+        WiFiManager wifi("FBI van 1", "2059030897");
+        wifi.connect(15000);
 
+        wifi.set_ssid("FBI van 2");
+        wifi.connect(30000);
+
+        delay(1000);
+        Serial.printf("Disconnecting from network...");
+        wifi.disconnect();
 }
 
 void loop()
