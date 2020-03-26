@@ -1,8 +1,10 @@
-/* FILE:        main.ino
- * AUTHOR:      Reece Chimento
- * DATE:        2020-03-XX
- * DESCRIPTION:
- */
+/*******************************************************************************
+ * @file	main.ino
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-03-21
+ * @see		https://github.com/reecechimento/road-surface-daq
+/******************************************************************************/
 
 // Devices
 #include "accelerometer.h"
@@ -125,7 +127,7 @@ void loop()
                         log_impact();
                         accelerometer.unlatch_interrupt();
                 }
-                // Periodicallyt record travel.
+                // Periodically record travel.
                 if (time_elapsed(5 * SECOND)) {
                         log_travel();
                 }
