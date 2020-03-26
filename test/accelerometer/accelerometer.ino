@@ -19,8 +19,6 @@ void setup()
         // Setup debugging.
         delay(1000);           // UNIX
         Serial.begin(115200);  // debugging
-
-	acc.begin(0x18);  // LIS3DH slave address
 	acc.setDataRate(LIS3DH_DATARATE_LOWPOWER_1K6HZ);
 	acc.setRange(LIS3DH_RANGE_8_G);
 	acc.printSensorDetails();
