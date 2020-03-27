@@ -1,3 +1,10 @@
+/******************************************************************************
+ * @file	gps.cpp
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-03-26
+ * @see		https://github.com/reecechimento/road-surface-daq
+/******************************************************************************/
 #include "gps.h"
 #include "Wire.h"
 

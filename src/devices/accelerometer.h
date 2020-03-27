@@ -8,7 +8,6 @@
 #pragma once
 
 #include "Arduino.h"
-#include "accelerometer_data.h"
 #include "Adafruit_LIS3DH.h"
 
 #define BUF_LEN 1600  // 1600 samples
@@ -28,4 +27,17 @@ class Accelerometer
                 int			buffer_len		= BUF_LEN;
 		size_t 			buffer_pointer		= 0;
 		volatile bool		interrupt_has_occured	= false;;
+};
+
+/**
+ * Aggregates accelerometer data.
+ *
+ * @x acceleration
+ * @y acceleration
+ * @z acceleration
+ */
+struct accelerometer_data {
+        float x;
+        float y;
+        float z;
 };

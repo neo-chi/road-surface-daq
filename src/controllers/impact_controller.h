@@ -2,9 +2,9 @@
 
 #include "Arduino.h"
 
-#include "accelerometer_data.h"
-#include "environmental_data.h"
-#include "gps_data.h"
+#include "accelerometer.h"
+#include "environmental_sensor.h"
+#include "gps.h"
 #include "impact.h"
 #include "storage.h"
 

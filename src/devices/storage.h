@@ -1,3 +1,10 @@
+/******************************************************************************
+ * @file	storage.h
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-03-24
+ * @see		https://github.com/reecechimento/road-surface-daq
+/******************************************************************************/
 #pragma once
 
 #include "Arduino.h"
@@ -9,14 +16,14 @@ class Storage
 {
         public:
                 Storage();
-                void mkdir(char *path);
-                void mv(char *path_from, char *path_to);
-                void rename(char *path_from, char *path_to);
-                void rm(char *path);
-                void rmdir(char *path);
-                char **read(char *path);
-                void write(char *path, char *message);
-                void write(char *path, uint8_t *buf, size_t bytes_to_write);
+                void            mkdir(char *path);
+                void            mv(char *path_from, char *path_to);
+                void            rename(char *path_from, char *path_to);
+                void            rm(char *path);
+                void            rmdir(char *path);
+                char            **read(char *path);
+                void            write(char *path, char *message);
+                void            write(char *path, uint8_t *buf, size_t bytes_to_write);
         private:
                 fs::FS &file_system;
 };
