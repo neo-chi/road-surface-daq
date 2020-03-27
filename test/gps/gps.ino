@@ -2,17 +2,20 @@
 
 /**
  * To Test:
- * [ ] GPS::GPS();
- * [ ] GPS::is_connected_to_satellites();
- * [ ] GPS::connect_to_satellites();
- * [ ] GPS::connect_to_satellites(long timer);
- * [ ] GPS::update_cache(year);
- * [ ] GPS::update_cache(month);
- * [ ] GPS::update_cache(day);
- * [ ] GPS::update_cache(hour);
- * [ ] GPS::read();
- * [ ] GPS::vehicle_state();
+ * [@] GPS::GPS();
+ * [@] GPS::is_connected_to_satellites();
+ * [@] GPS::connect_to_satellites();
+ * [@] GPS::connect_to_satellites(long timer);
+ * [@] GPS::update_cache(year);
+ * [@] GPS::update_cache(month);
+ * [@] GPS::update_cache(day);
+ * [@] GPS::update_cache(hour);
+ * [@] GPS::read();
+ * [@] GPS::vehicle_state();
  **/
+
+// Test constructor
+GPS gps;
 
 void setup()
 {
@@ -20,8 +23,6 @@ void setup()
         delay(1000);  // UNIX
         Serial.begin(115200); // Debugging
 
-        // Test constructor
-        GPS gps;
 
         // Test vehicle_state --> unknown
         switch (gps.vehicle_state()) {
@@ -36,7 +37,7 @@ void setup()
         // Test is_connected_to_satellites()
         while (!gps.is_connected_to_satellites()) {
                 // Test connect_to_satellites(long timer)
-                gps.connect_to_satellites();  // 10 seconds.
+                gps.connect_to_satellites(10000);  // 10 seconds.
         }
 
         // Test update_cache(type)
@@ -57,19 +58,30 @@ void setup()
         }
 
         gps_data gps_dat = gps.read();
-        Serial.println(gps_dat.year);
-        Serial.println(gps_dat.month);
-        Serial.println(gps_dat.day);
-        Serial.println(gps_dat.hour);
-        Serial.println(gps_dat.minute);
-        Serial.println(gps_dat.second);
-        Serial.println(gps_dat.millisecond);
-        Serial.println(gps_dat.latitude);
-        Serial.println(gps_dat.longitude);
-        Serial.println(gps_dat.speed);
+        Serial.printf("Year:\t%04d\n",          gps_dat.year);
+        Serial.printf("Month:\t%02d\n",         gps_dat.month);
+        Serial.printf("Day:\t%02d\n",           gps_dat.day);
+        Serial.printf("Hour:\t%02d\n",          gps_dat.hour);
+        Serial.printf("Minute:\t%02d\n",        gps_dat.minute);
+        Serial.printf("Second:\t%02d\n",        gps_dat.second);
+        Serial.printf("Millisecond:\t%02d\n",   gps_dat.millisecond);
+        Serial.printf("Latitude:\t%0.6lf\n",    gps_dat.latitude);
+        Serial.printf("Longitude:\t%0.6lf\n",   gps_dat.longitude);
+        Serial.printf("Speed:\t%0.3f\n",        gps_dat.speed);
 }
 
 void loop()
 {
-
+        gps_data gps_dat = gps.read();
+        Serial.printf("Year:\t%04d\n",          gps_dat.year);
+        Serial.printf("Month:\t%02d\n",         gps_dat.month);
+        Serial.printf("Day:\t%02d\n",           gps_dat.day);
+        Serial.printf("Hour:\t%02d\n",          gps_dat.hour);
+        Serial.printf("Minute:\t%02d\n",        gps_dat.minute);
+        Serial.printf("Second:\t%02d\n",        gps_dat.second);
+        Serial.printf("Millisecond:\t%02d\n",   gps_dat.millisecond);
+        Serial.printf("Latitude:\t%d\n",        gps_dat.latitude);
+        Serial.printf("Longitude:\t%d\n",       gps_dat.longitude);
+        Serial.printf("Speed:\t%0.3f\n",        gps_dat.speed);
+        delay(1000);
 }

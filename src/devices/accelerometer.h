@@ -10,23 +10,13 @@
 #include "Arduino.h"
 #include "Adafruit_LIS3DH.h"
 
-#define BUF_LEN 1600  // 1600 samples
+#define PRE_IMP_BUF_LEN  800
+#define POST_IMP_BUF_LEN 1600
+#define ACC_BUF_LEN      PRE_IMP_BUF_LEN + POST_IMP_BUF_LEN
 
-class Accelerometer
-{
-        public:
-                Accelerometer();
-                accelerometer_data      *read();
-                int                     buffer_length();
-                void                    unlatch_interrupt();
-                volatile bool           interrupt_is_latched();
-                bool                    buffer_is_full();
-        private:
-                Adafruit_LIS3DH         driver;
-                accelerometer_data      buffer[BUF_LEN];
-                int			buffer_len		= BUF_LEN;
-		size_t 			buffer_pointer		= 0;
-		volatile bool		interrupt_has_occured	= false;;
+enum acc_buffer {
+        PRE_IMPACT,
+        POST_IMPACT
 };
 
 /**
@@ -40,4 +30,20 @@ struct accelerometer_data {
         float x;
         float y;
         float z;
+};
+
+class Accelerometer
+{
+        public:
+                Accelerometer();
+                void                    begin();
+                void                    read(acc_buffer buffer_to_write);
+                accelerometer_data      read();
+                void                    unlatch_interrupt();
+                volatile bool           interrupt_is_latched();
+                accelerometer_data      pre_impact[PRE_IMP_BUF_LEN];
+                accelerometer_data      post_impact[POST_IMP_BUF_LEN];
+        private:
+                Adafruit_LIS3DH         *driver;
+		volatile bool		interrupt_has_occured = false;
 };
