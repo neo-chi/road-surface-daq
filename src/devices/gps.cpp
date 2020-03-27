@@ -94,7 +94,7 @@ void GPS::connect_to_satellites(long timeout)
         } else {
                 long            elapsed_time            = 0;
                 uint8_t         seconds_waiting         = 0;
-                Serial.printf("Waiting %d milliseconds until satellite connection is received.");
+                Serial.printf("Waiting %d milliseconds until satellite connection is received.", timeout);
                 while (millis() - elapsed_time < timeout) {
                         if (seconds_waiting >= 3)
                                 Serial.printf("\b\b\b");
@@ -115,7 +115,7 @@ void GPS::connect_to_satellites(long timeout)
 bool GPS::is_connected_to_satellites()
 {
         uint8_t num_satellites = driver.getSIV();
-        Serial.printf("Connected to %d satellites\n", num_satellites);
+        //Serial.printf("Connected to %d satellites\n", num_satellites);
         if (num_satellites > 2)
                 return true;
         else
