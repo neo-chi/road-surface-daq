@@ -2,24 +2,67 @@
 
 ## TODO
 
-### Data Transfer Objects
+- [ ] file manager
+- [ ] configuration file
+- [ ] wifi config server
 
-- [x] Implement Date
-- [x] Implement Time
-- [x] Implement Datetime
-- [x] Implement Acceleration
-- [x] Implement Impact
-  - [ ] Refactor Impact to accept an enum for impact-severity
-- [x] Implement Travel
-- [x] Implement Environment
+Table of contents
 
-### Actions
+## Road Map
 
-- [x] Test DataCollector
-- [x] Test Storage
-- [] Test DataCollector -> Storage mediation
-- [] Test Uploader
-- [] Test Stroage -> Uploader mediation
+- [ ] **Debug/Logging system**
+
+> A logger for every component in this system that reports status updates,
+> processing information, errors, etc., all to a log file on the SD card, or
+> emailed to me.
+
+- [ ] Multi-Core Processing
+
+## Actors
+
+### Road Surface Dispatcher
+
+### Artificial Intelligence
+
+### Researchers
+
+## Use Cases
+
+* Road Surface Dispatcher
+  * Collect poor road health information
+    * date
+    * time
+    * location
+    * vehicle speed
+    * severity (acceleration, AI)
+    * image
+  * Collect good road health information
+    * location
+    * date
+    * time
+    * vehicle speed
+
+* Artificial Intelligence
+  * Collect poor road health information with additional information
+    * date
+    * time
+    * location
+    * acceleration data set
+    * **additional information**
+      * temperature
+      * humidity
+      * pressure
+ * Collect good road health information with additional information
+    * date
+    * time
+    * location
+    * **additional information**
+      * temperature
+      * humidity
+      * pressure
+
+* Researchers
+  * same as AI
 
 ## Table of Contents
 
