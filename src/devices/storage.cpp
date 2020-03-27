@@ -1,3 +1,10 @@
+/******************************************************************************
+ * @file	storage.cpp
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-03-24
+ * @see		https://github.com/reecechimento/road-surface-daq
+/******************************************************************************/
 #include "storage.h"
 #define SIZE_READ_BUFFER 2048
 #define SIZE_CHAR_ARRAY  16

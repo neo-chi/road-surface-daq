@@ -2,8 +2,8 @@
 
 #include "Arduino.h"
 
-#include "environmental_data.h"
-#include "gps_data.h"
+#include "environmental_sensor.h"
+#include "gps.h"
 #include "storage.h"
 #include "travel.h"
 
