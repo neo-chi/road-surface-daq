@@ -43,6 +43,15 @@ class Accelerometer
                 volatile bool           interrupt_is_latched();
                 acceleration_data       impact[ACC_BUF_LEN];
         private:
-                Adafruit_LIS3DH         driver;
+                const int spi_clk       = 1000000;  // 1MHz
+                const int sck_pin       =  16;
+                const int mosi_pin      =  4;
+                const int miso_pin      =  2;
+                const int ss_pin        =  15;
+
+                // Pointer to SPI bus... NOTE: call hspi->begin(sck_pin, mosi_pin, miso_pin, ss_pin) to make this work.
+                SPIClass  *hspi                = new SPIClass(HSPI);  // uninitialized pointers SPI objects
+                Adafruit_LIS3DH         driver = Adafruit_LIS3DH(ss_pin, hspi);
+
 		volatile bool		interrupt_has_occured = false;
 };
