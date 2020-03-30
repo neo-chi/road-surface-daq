@@ -28,13 +28,11 @@ Accelerometer::Accelerometer()
 }
 
 void Accelerometer::begin() {
-        /* attempt SPI
-                int cs_pin   =  15;
-                int mosi_pin =  2;
-                int miso_pin =  0;
-                int sck_pin  =  4;
-                Adafruit_LIS3DH(cs_pin, mosi_pin, miso_pin, sck_pin);
-        */
+        // Setup HSPI bus.
+        hspi->begin(sck_pin, miso_pin, mosi_pin, ss_pin);
+        pinMode(ss_pin, OUTPUT); // set up ss pins as outputs since arduino does not automatically pull SS low
+
+        // Setup accelerometer. Accelerometer will run on HSPI bus (see accelerometer.h)
         driver.setDataRate(LIS3DH_DATARATE_LOWPOWER_1K6HZ);
         driver.setRange(LIS3DH_RANGE_8_G);
         driver.begin();

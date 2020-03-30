@@ -18,21 +18,21 @@ void setup()
         Serial.begin(9600);
 
         accelerometer->begin();
-        gps->begin();
-        storage->begin();
+        //gps->begin();
+        //storage->begin();
 
-        gps->connect_to_satellites();
+        //gps->connect_to_satellites();
 
-        //accelerometer->read(PRE_IMPACT);
-        //accelerometer->read(POST_IMPACT);
+        ////accelerometer->read(PRE_IMPACT);
+        ////accelerometer->read(POST_IMPACT);
 
-        impact_controller.attach(storage);
-        impact_controller.attach(accelerometer);
-        impact_controller.attach(gps);
-        impact_controller.attach(environmental_sensor);
+        //impact_controller.attach(storage);
+        //impact_controller.attach(accelerometer);
+        //impact_controller.attach(gps);
+        //impact_controller.attach(environmental_sensor);
 
-        impact_controller.create_impact();
-        impact_controller.log_impact();
+        //impact_controller.create_impact();
+        //impact_controller.log_impact();
 
 }
 
