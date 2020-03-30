@@ -16,6 +16,7 @@ class Storage
 {
         public:
                 Storage();
+                void            begin();
                 void            mkdir(char *path);
                 void            mv(char *path_from, char *path_to);
                 void            rename(char *path_from, char *path_to);

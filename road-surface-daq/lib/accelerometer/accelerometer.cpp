@@ -63,11 +63,11 @@ void Accelerometer::read(acc_buffer buffer_to_write)
                 break;
         case POST_IMPACT:
                 // fill impact[800 - 2399]
-                for (size_t i = 0; i < POST_IMP_BUF_LEN; i++) {
+                for (size_t i = PRE_IMP_BUF_LEN; i < ACC_BUF_LEN; i++) {
                         driver.read();
-                        impact[i + POST_IMP_BUF_LEN].x = driver.x_g;
-                        impact[i + POST_IMP_BUF_LEN].y = driver.y_g;
-                        impact[i + POST_IMP_BUF_LEN].z = driver.z_g;
+                        impact[i].x = driver.x_g;
+                        impact[i].y = driver.y_g;
+                        impact[i].z = driver.z_g;
                 }
                 break;
         default:

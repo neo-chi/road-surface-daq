@@ -16,6 +16,10 @@
  */
 Storage::Storage() : file_system(SD)
 {
+}
+
+void Storage::begin()
+{
         if (SD.begin()) {
                 Serial.println("Succesfully mounted SD card!");
                 Serial.println("Created storage.");
@@ -35,10 +39,15 @@ void Storage::mkdir(char *path)
         Serial.print("Making directory at ");
         Serial.print(path);
         Serial.print(" ... ");
-        if (file_system.mkdir(path))
-                Serial.println("Complete!");
-        else
-                Serial.println("Failure!");
+        if (file_system.exists(path)) {
+                Serial.printf("The directory %s already exists!", path);
+        } else {
+                Serial.printf("The directory %s does not exist, creating...", path);
+                if (file_system.mkdir(path))
+                        Serial.println("complete!");
+                else
+                        Serial.println("failure! Unexpected error");
+        }
 }
 
 /**
@@ -171,7 +180,7 @@ void Storage::rmdir(char *path)
 void Storage::write(char *path, char *message)
 {
         if (file_system.exists(path)) {
-                Serial.printf("%s exists, appending \"%s\"...", path, message);
+                //Serial.printf("%s exists, appending \"%s\"...", path, message);
                 File file = file_system.open(path, FILE_APPEND);
                 if (file) { // if file opened...
                         file.printf("%s", message);
@@ -181,7 +190,7 @@ void Storage::write(char *path, char *message)
                 }
                 file.close();
         } else {
-                Serial.printf("%s created, writing \"%s\"...", path, message);
+                //Serial.printf("%s created, writing \"%s\"...", path, message);
                 File file = file_system.open(path, FILE_WRITE);
                 if (file) { // if file opened...
                         file.printf("%s", message);

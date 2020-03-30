@@ -71,6 +71,7 @@ class GPS
 {
         public:
                 GPS();
+                void            begin();
                 gps_data        read();
                 void            connect_to_satellites(long timeout = 0);
                 bool            is_connected_to_satellites();

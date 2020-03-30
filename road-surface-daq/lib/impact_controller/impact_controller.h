@@ -8,14 +8,13 @@
 #include "impact.h"
 #include "storage.h"
 
-#define LOG_SIZE_MAX 40000
+#define LOG_SIZE_MAX 64000
 
 
 class ImpactController
 {
         public:
                 ImpactController();
-                ImpactController(Storage *storage, Accelerometer *accelerometer, GPS *gps, EnvironmentalSensor *environmental_sensor);
                 void create_impact();
                 void log_impact();
                 void upload_impact(const char *location);
