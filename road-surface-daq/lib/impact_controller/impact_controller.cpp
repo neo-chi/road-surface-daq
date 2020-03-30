@@ -5,45 +5,30 @@
  **/
 ImpactController::ImpactController()
 {
-}
-
-ImpactController::ImpactController(Storage *storage, Accelerometer *accelerometer, GPS *gps, EnvironmentalSensor *environmental_sensor)
-{
-        Serial.printf("Initializing impact controller...\n");
-
-        this->storage = storage;
-        Serial.printf("impact_controller: attached storage\n");
-
-        this->accelerometer = accelerometer;
-        Serial.printf("impact_controller: attached accelerometer\n");
-
-        this->gps = gps;
-        Serial.printf("impact_controller: attached gps\n");
-
-        this->environmental_sensor = environmental_sensor;
-        Serial.printf("impact_controller: attached environmental_sensor\n");
-
-        Serial.printf("complete!");
 
 }
 
 void ImpactController::attach(Storage *storage)
 {
         this->storage = storage;
+        Serial.printf("impact_controller: attached storage\n");
 }
 void ImpactController::attach(Accelerometer *accelerometer)
 {
         this->accelerometer = accelerometer;
+        Serial.printf("impact_controller: attached accelerometer\n");
 }
 
 void ImpactController::attach(GPS *gps)
 {
         this->gps = gps;
+        Serial.printf("impact_controller: attached gps\n");
 }
 
 void ImpactController::attach(EnvironmentalSensor *environmental_sensor)
 {
         this->environmental_sensor = environmental_sensor;
+        Serial.printf("impact_controller: attached environmental_sensor\n");
 }
 
 /**
@@ -57,6 +42,8 @@ void ImpactController::create_impact()
 {
         Serial.println("Creating an impact entity.");
         gps_data _gps_data = this->gps->read();
+        this->accelerometer->read(PRE_IMPACT); // this happens all the time...
+        this->accelerometer->read(POST_IMPACT); // this happens on interrupt...
         acceleration_data *_acceleration = this->accelerometer->impact;
         //environmental_data environment = this->environmental_sensor->read();
         environmental_data environment = {10.1, 20.2, 30.3};
@@ -90,37 +77,48 @@ void ImpactController::log_impact()
 {
         // FILE FORMAT
         // date
+        Serial.print("impact controller: generating date...");
         size_t number_of_bytes_written = 0;
         number_of_bytes_written = sprintf(log + offset, "%04d-%02d-%02d",
                 impact.year,
                 impact.month,
                 impact.day);
         extend_offset(number_of_bytes_written);
+        Serial.println("complete!");
         // time
+        Serial.print("impact controller: generating time...");
         number_of_bytes_written = sprintf(log + offset, "%02d:%02d:%02d.%02d",
                 impact.hour,
                 impact.minute,
                 impact.second,
                 impact.millisecond);
         extend_offset(number_of_bytes_written);
+        Serial.println("complete!");
         // location
+        Serial.print("impact controller: generating location...");
         number_of_bytes_written = sprintf(log + offset, "%0.6f, %0.6f",
                 impact.latitude,
                 impact.longitude);
         extend_offset(number_of_bytes_written);
+        Serial.println("complete!");
         // speed
+        Serial.print("impact controller: generating speed...");
         number_of_bytes_written = sprintf(log + offset, "%0.6lf",
                 impact.speed);
         extend_offset(number_of_bytes_written);
+        Serial.println("complete!");
         // environment
+        Serial.print("impact controller: generating envrionment_data...");
         number_of_bytes_written = sprintf(log + offset, "%0.3f, %0.3f, %0.3f, %0.3f",
                 impact.temperature,
                 impact.humidity,
                 impact.pressure);
         extend_offset(number_of_bytes_written);
+        Serial.println("complete!");
         // acceleration_n
         // acceleration_n + 1
         // ...
+        Serial.print("impact controller: generating acceleration...");
         for (size_t i = 0; i < ACC_BUF_LEN; i++) {
                 number_of_bytes_written = sprintf(           // --> CORRUPT HEAP ERROR
                         log + offset,
@@ -130,24 +128,33 @@ void ImpactController::log_impact()
                         impact.acceleration_buffer[i].z);
                 extend_offset(number_of_bytes_written);
         }
+        Serial.println("complete!");
         // EOF
 
-        sprintf(log_dir, "/%04d%02d%02d",
-                impact.year,
-                impact.month,
-                impact.day);
+        Serial.print("impact controller: generating log directory...");
+        sprintf(log_dir, "/20200330");
+        //sprintf(log_dir, "/%04d%02d%02d",
+                //impact.year,
+                //impact.month,
+                //impact.day);
+        Serial.println("complete!");
 
-        sprintf(log_filename, "%02d%02d%02d%02d.imp",
-                impact.hour,
-                impact.minute,
-                impact.second,
-                impact.millisecond);
+        Serial.print("impact controller: generating log filename...");
+        sprintf(log_filename, "17062237.imp");
+        //sprintf(log_filename, "%02d%02d%02d%02d.imp",
+                //impact.hour,
+                //impact.minute,
+                //impact.second,
+                //impact.millisecond);
+        Serial.println("complete!");
 
         sprintf(path, "%s/%s", log_dir, log_filename);
         Serial.printf("Writing to %s\n", path);
-
-        Serial.printf(log);
-        //storage.write(path, log);
+        char *log_HEAD = log;
+        //Serial.printf(log);
+        storage->mkdir(log_dir);
+        storage->write(path, (uint8_t*)log_HEAD, offset);
+        Serial.println("Impact logging complete!");
 
         reset_offset();
 }

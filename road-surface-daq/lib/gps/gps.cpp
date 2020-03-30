@@ -17,12 +17,16 @@
  **/
 GPS::GPS()
 {
+}
+
+void GPS::begin()
+{
         Wire.begin();
         driver.begin();
         driver.setI2COutput(COM_TYPE_UBX);
         driver.setNavigationFrequency(NAVIGATION_FREQ);
         driver.saveConfiguration();
-        Serial.println("Created a gps.");
+        Serial.println("GPS initialized!");
 }
 
 /**
@@ -78,7 +82,7 @@ void GPS::connect_to_satellites(long timeout)
                 long            elapsed_time            = 0;
                 uint8_t         seconds_waiting         = 0;
                 const int       MAX_WAIT_SECONDS        = 10;
-                Serial.print("Waiting until satellite connection is received");
+                Serial.println("Waiting until satellite connection is received");
                 while (!(this->is_connected_to_satellites())) {
                         if (seconds_waiting >= MAX_WAIT_SECONDS) {
                                 seconds_waiting = 0;
@@ -90,6 +94,11 @@ void GPS::connect_to_satellites(long timeout)
                                 seconds_waiting++;
                         }
 
+                }
+                if (this->is_connected_to_satellites()) {
+                        Serial.println("GPS connected!");
+                } else {
+                        Serial.println("GPS could not connect!");
                 }
         } else {
                 long            elapsed_time            = 0;
@@ -104,6 +113,11 @@ void GPS::connect_to_satellites(long timeout)
                                 seconds_waiting++;
                         }
                 }
+        }
+        if (this->is_connected_to_satellites()) {
+                Serial.println("GPS connected!");
+        } else {
+                Serial.println("GPS could not connect!");
         }
 }
 
