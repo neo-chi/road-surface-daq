@@ -10,7 +10,7 @@
 
 	Written by Nathan Seidle @ SparkFun Electronics, September 6th, 2018
 
-	This library handles configuring and handling the responses 
+	This library handles configuring and handling the responses
 	from a Ublox GPS module. Works with most modules from Ublox including
 	the Zed-F9P, NEO-M8P-2, NEO-M9N, ZOE-M8Q, SAM-M8Q, and many others.
 
@@ -22,19 +22,19 @@
 	SparkFun code, firmware, and software is released under the MIT License(http://opensource.org/licenses/MIT).
 	The MIT License (MIT)
 	Copyright (c) 2016 SparkFun Electronics
-	Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
-	associated documentation files (the "Software"), to deal in the Software without restriction, 
-	including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-	and/or sell copies of the Software, and to permit persons to whom the Software is furnished to 
+	Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+	associated documentation files (the "Software"), to deal in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+	and/or sell copies of the Software, and to permit persons to whom the Software is furnished to
 	do so, subject to the following conditions:
 
-	The above copyright notice and this permission notice shall be included in all copies or substantial 
+	The above copyright notice and this permission notice shall be included in all copies or substantial
 	portions of the Software.
 
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT 
-	NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
-	WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+	NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+	WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
@@ -2198,7 +2198,7 @@ uint8_t SFE_UBLOX_GPS::extractByte(uint8_t spotToStart)
 }
 
 //Get the current year
-uint16_t SFE_UBLOX_GPS::getYear(uint16_t maxWait)
+uint16_t IRAM_ATTR SFE_UBLOX_GPS::getYear(uint16_t maxWait)
 {
   if (moduleQueried.gpsYear == false)
     getPVT(maxWait);
@@ -2207,7 +2207,7 @@ uint16_t SFE_UBLOX_GPS::getYear(uint16_t maxWait)
 }
 
 //Get the current month
-uint8_t SFE_UBLOX_GPS::getMonth(uint16_t maxWait)
+uint8_t IRAM_ATTR SFE_UBLOX_GPS::getMonth(uint16_t maxWait)
 {
   if (moduleQueried.gpsMonth == false)
     getPVT(maxWait);
@@ -2216,7 +2216,7 @@ uint8_t SFE_UBLOX_GPS::getMonth(uint16_t maxWait)
 }
 
 //Get the current day
-uint8_t SFE_UBLOX_GPS::getDay(uint16_t maxWait)
+uint8_t IRAM_ATTR SFE_UBLOX_GPS::getDay(uint16_t maxWait)
 {
   if (moduleQueried.gpsDay == false)
     getPVT(maxWait);
@@ -2225,7 +2225,7 @@ uint8_t SFE_UBLOX_GPS::getDay(uint16_t maxWait)
 }
 
 //Get the current hour
-uint8_t SFE_UBLOX_GPS::getHour(uint16_t maxWait)
+uint8_t IRAM_ATTR SFE_UBLOX_GPS::getHour(uint16_t maxWait)
 {
   if (moduleQueried.gpsHour == false)
     getPVT(maxWait);
@@ -2234,7 +2234,7 @@ uint8_t SFE_UBLOX_GPS::getHour(uint16_t maxWait)
 }
 
 //Get the current minute
-uint8_t SFE_UBLOX_GPS::getMinute(uint16_t maxWait)
+uint8_t IRAM_ATTR SFE_UBLOX_GPS::getMinute(uint16_t maxWait)
 {
   if (moduleQueried.gpsMinute == false)
     getPVT(maxWait);
@@ -2243,7 +2243,7 @@ uint8_t SFE_UBLOX_GPS::getMinute(uint16_t maxWait)
 }
 
 //Get the current second
-uint8_t SFE_UBLOX_GPS::getSecond(uint16_t maxWait)
+uint8_t IRAM_ATTR SFE_UBLOX_GPS::getSecond(uint16_t maxWait)
 {
   if (moduleQueried.gpsSecond == false)
     getPVT(maxWait);
@@ -2252,7 +2252,7 @@ uint8_t SFE_UBLOX_GPS::getSecond(uint16_t maxWait)
 }
 
 //Get the current millisecond
-uint16_t SFE_UBLOX_GPS::getMillisecond(uint16_t maxWait)
+uint16_t IRAM_ATTR SFE_UBLOX_GPS::getMillisecond(uint16_t maxWait)
 {
   if (moduleQueried.gpsiTOW == false)
     getPVT(maxWait);
@@ -2408,7 +2408,7 @@ uint32_t SFE_UBLOX_GPS::getPositionAccuracy(uint16_t maxWait)
 
 //Get the current latitude in degrees
 //Returns a long representing the number of degrees *10^-7
-int32_t SFE_UBLOX_GPS::getLatitude(uint16_t maxWait)
+int32_t IRAM_ATTR SFE_UBLOX_GPS::getLatitude(uint16_t maxWait)
 {
   if (moduleQueried.latitude == false)
     getPVT(maxWait);
@@ -2420,7 +2420,7 @@ int32_t SFE_UBLOX_GPS::getLatitude(uint16_t maxWait)
 
 //Get the current longitude in degrees
 //Returns a long representing the number of degrees *10^-7
-int32_t SFE_UBLOX_GPS::getLongitude(uint16_t maxWait)
+int32_t IRAM_ATTR SFE_UBLOX_GPS::getLongitude(uint16_t maxWait)
 {
   if (moduleQueried.longitude == false)
     getPVT(maxWait);
@@ -2493,7 +2493,7 @@ uint8_t SFE_UBLOX_GPS::getCarrierSolutionType(uint16_t maxWait)
 }
 
 //Get the ground speed in mm/s
-int32_t SFE_UBLOX_GPS::getGroundSpeed(uint16_t maxWait)
+int32_t IRAM_ATTR SFE_UBLOX_GPS::getGroundSpeed(uint16_t maxWait)
 {
   if (moduleQueried.groundSpeed == false)
     getPVT(maxWait);
