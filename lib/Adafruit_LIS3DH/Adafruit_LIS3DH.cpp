@@ -177,7 +177,7 @@ bool Adafruit_LIS3DH::haveNewData() {
 /*!
  *  @brief  Reads x y z values at once
  */
-void Adafruit_LIS3DH::read() {
+void IRAM_ATTR Adafruit_LIS3DH::read() {
   if (_cs == -1) {
     // i2c
     I2Cinterface->beginTransmission(_i2caddr);

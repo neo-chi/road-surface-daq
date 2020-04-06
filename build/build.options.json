@@ -1,0 +1,11 @@
+{
+  "additionalFiles": "",
+  "builtInLibrariesFolders": "/home/neo/Downloads/arduino-1.8.12/libraries",
+  "builtInToolsFolders": "/home/neo/Downloads/arduino-1.8.12/tools-builder,/home/neo/Downloads/arduino-1.8.12/hardware/tools/avr,/home/neo/.arduino15/packages",
+  "customBuildProperties": "build.path=/home/neo/senior-design/build,build.warn_data_percentage=75,runtime.tools.esptool_py.path=/home/neo/.arduino15/packages/esp32/tools/esptool_py/2.6.1,runtime.tools.esptool_py-2.6.1.path=/home/neo/.arduino15/packages/esp32/tools/esptool_py/2.6.1,runtime.tools.xtensa-esp32-elf-gcc.path=/home/neo/.arduino15/packages/esp32/tools/xtensa-esp32-elf-gcc/1.22.0-80-g6c4433a-5.2.0,runtime.tools.xtensa-esp32-elf-gcc-1.22.0-80-g6c4433a-5.2.0.path=/home/neo/.arduino15/packages/esp32/tools/xtensa-esp32-elf-gcc/1.22.0-80-g6c4433a-5.2.0,runtime.tools.mkspiffs.path=/home/neo/.arduino15/packages/esp32/tools/mkspiffs/0.2.3,runtime.tools.mkspiffs-0.2.3.path=/home/neo/.arduino15/packages/esp32/tools/mkspiffs/0.2.3",
+  "fqbn": "esp32:esp32:esp32:PSRAM=disabled,PartitionScheme=huge_app,CPUFreq=240,FlashMode=qio,FlashFreq=80,FlashSize=4M,UploadSpeed=921600,DebugLevel=none",
+  "hardwareFolders": "/home/neo/Downloads/arduino-1.8.12/hardware,/home/neo/.arduino15/packages",
+  "otherLibrariesFolders": "/home/neo/Arduino/libraries",
+  "runtime.ide.version": "10812",
+  "sketchLocation": "/home/neo/senior-design/test/main/main.ino"
+}

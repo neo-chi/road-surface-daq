@@ -22,50 +22,56 @@
 #define enable_interrupts()  sei()
 
 // Clarity constants
-#define SECOND                  1000
-#define MINUTE                  60 * SECOND
-#define HOUR                    60 * MINUTE
-#define DAY                     24 * HOUR
+#define THIRTY_MINUTES          1800000
+#define TEN_MINUTES             600000
+#define TEN_SECONDS             10000
+#define ONE_SECOND              1000
 
 // Update these to control functions.
 #define ACCELERATION_BUF_LEN            512
-#define GPS_CONNECT_TIMEOUT             10 * SECOND
-#define WIFI_CONNECT_TIMEOUT            10 * SECOND
-#define ENV_UPDATE_CACHE_TIME           10 * MINUTE
+#define GPS_CONNECT_TIMEOUT             TEN_SECONDS
+#define WIFI_CONNECT_TIMEOUT            TEN_SECONDS
+#define ENV_UPDATE_CACHE_TIME           TEN_MINUTES
+#define GPS_UPDATE_CACHE_YEAR_TIME      THIRTY_MINUTES
+#define GPS_UPDATE_CACHE_MONTH_TIME     THIRTY_MINUTES
+#define GPS_UPDATE_CACHE_DAY_TIME       THIRTY_MINUTES
+#define GPS_UPDATE_CACHE_HOUR_TIME      THIRTY_MINUTES
+#define GPS_UPDATE_CACHE_MINUTE_TIME    TEN_SECONDS
+#define TRAVEL_LOG_TIMER                ONE_SECOND
+#define VEHICLE_STATE_UPDATE_TIME       ONE_SECOND
 // [ ] Make update time depend on gps time
-#define GPS_UPDATE_CACHE_YEAR_TIME      30 * MINUTE
-#define GPS_UPDATE_CACHE_MONTH_TIME     30 * MINUTE
-#define GPS_UPDATE_CACHE_DAY_TIME       30 * MINUTE
-#define GPS_UPDATE_CACHE_HOUR_TIME      30 * MINUTE
-#define GPS_UPDATE_CACHE_MINUTE_TIME    10 * SECOND
-#define TRAVEL_LOG_TIMER                1  * SECOND
 
 // Devices
-Accelerometer           accelerometer;
-EnvironmentalSensor     environmental_sensor;
-GPS                     gps;
-Storage                 storage;
-WiFi                    wifi("SSID", "PSK");  // [ ] open wifi-direct configuration server if no wifi is detected after predefined number of times.
+Accelerometer           *accelerometer        = new Accelerometer;
+EnvironmentalSensor     *environmental_sensor = new EnvironmentalSensor;
+GPS                     *gps                  = new GPS;
+Storage                 *storage              = new Storage;
+WiFiManager             *wifi                 = new WiFiManager("SSID", "PSK");
 
 // Controllers
 ImpactController        impact_controller;
 TravelController        travel_controller;
 
-// Data structures
-environmental_data      environment;
-gps_data                gps_data_;
-accelerometer_data      *acceleration = (accelerometer_data*)malloc(sizeof(accelerometer_data));
-impact_data             impact;
-travel_data             travel;
+/**
+ * Read impact information from sensors when impact is detected.
+ *
+ * When an impact is detected, it is important that relevant data is collected
+ * to ensure the impact may be evaluated by the AI system and road service
+ * dispatching personell.
+ **/
+void IRAM_ATTR accelerometer_z_high_ISR()
+{
+        accelerometer->interrupt_has_occured = true;
+        //Serial.println("INTERRUPT");
+}
 
-// Cache update timers.
-long environment_cache_timer    = 0;
-long gps_year_cache_timer       = 0;
-long gps_month_cache_timer      = 0;
-long gps_day_cache_timer        = 0;
-long gps_hour_cache_timer       = 0;
-long gps_minute_cache_timer     = 0;
-long travel_recording_timer     = 0;
+// User-defined configurations
+#define ACCELEROMETER_INT_PIN           16
+#define GPS_VEHICLE_IS_MOVING_SPEED     200  // UNITS: mm/s
+#define ACCELEROMETER_DATARATE          LIS3DH_DATARATE_LOWPOWER_1K6HZ
+#define ACCELEROMETER_RANGE             LIS3DH_RANGE_8_G
+#define IMPACT_LOG_SIZE_MAX             32000  // 32000 B
+#define TRAVEL_RECORD_PERIOD            5000   // 5 seconds
 
 void setup()
 {
@@ -80,19 +86,37 @@ void setup()
         delay(1000);  // UNIX
         Serial.begin(115200);
 
+        // Setup accelerometer interrupt
+        pinMode(ACCELEROMETER_INT_PIN, INPUT_PULLDOWN);
+        attachInterrupt(ACCELEROMETER_INT_PIN, accelerometer_z_high_ISR, RISING);
+
+        accelerometer->begin();
+        gps->begin();
+        storage->begin();
+        environmental_sensor->begin();
+        wifi->begin();
+
+        impact_controller.attach(accelerometer);
+        impact_controller.attach(gps);
+        impact_controller.attach(environmental_sensor);
+        impact_controller.attach(storage);
+        impact_controller.attach(wifi);
+
+        travel_controller.attach(gps);
+        travel_controller.attach(environmental_sensor);
+        travel_controller.attach(storage);
+        travel_controller.attach(wifi);
+
         // Ensure interrupt is unlatched to prevent accidental logging.
-        if (accelerometer.interrupt_is_latched())
-                accelerometer.unlatch_interrupt();
+        accelerometer->unlatch_interrupt();
+        gps->connect_to_satellites(GPS_CONNECT_TIMEOUT);
 
         // Assume vehicle is about to begin moving. We don't need wifi yet.
-        if (wifi.is_connected())
-                disable_wifi();
+        disable_wifi();
 
         // Try to get a satellite connection on startup.
-        if (!gps.is_connected_to_satellites())
-                gps.connect_to_satellites();
-
-        // [ ] initialize storage
+        //if (!gps->is_connected_to_satellites())
+               //gps->connect_to_satellites();
 
         /*
          * Now that the devices are setup, interrupts may be handled properly
@@ -104,68 +128,125 @@ void setup()
 
 void loop()
 {
-        switch (gps.vehicle_state()) {
-        case idle:
-                // Connect to WiFi.
-                if (!wifi.is_connected())
+        // TODO: remove log files after uploading
+        //switch (get_vehicle_state()) {
+        switch(MOVING) {
+        case IDLE:
+                disable_interrupts();  // we don't want to record impacts that oddly occur while idle...
+                if (wifi->is_connected())
+                        upload_logs();
+                else
                         enable_wifi();
-                // Upload travel and impact logs.
-                if (wifi.is_connected()) {
-                        upload_impact_log();
-                        upload_travel_log();
-                }
                 break;
-        case moving:
-                // Update cache.
+        case MOVING:
+                enable_interrupts();
+                if (impact_detected())
+                        log_impact();
+                if (time_elapsed(TRAVEL_RECORD_PERIOD))
+                        log_travel();
+                accelerometer->read(PRE_IMPACT);
                 update_environment_cache();
                 update_gps_cache();
-                // We don't need wifi while we're driving.
-                if (wifi.is_connected())
-                        disable_wifi();
-                // Record impact.
-                if (accelerometer.interrupt_is_latched()) {
-                        log_impact();
-                        accelerometer.unlatch_interrupt();
-                }
-                // Periodically record travel.
-                if (time_elapsed(5 * SECOND)) {
-                        log_travel();
-                }
                 break;
-        case unknown:
-                // We don't need wifi while we're driving.
-                if (wifi.is_connected())
-                        disable_wifi();
-                // Record acceleration.
-                if (accelerometer.interrupt_is_latched()) {
-                        log_acceleration();
-                        accelerometer.unlatch_interrupt();
-                }
-                // Attempt to get satellite connection.
-                if (!gps.is_connected_to_satellites()) {
-                        disable_interrupts();
-                        gps.connect_to_satellites(GPS_CONNECT_TIMEOUT);
-                        enable_interrupts();
-                }
+        case UNKNOWN:
+                enable_interrupts();
+                if (impact_detected())
+                        log_acceleration(); // there's a problem here!
+                if (!gps->is_connected_to_satellites())
+                        gps->connect_to_satellites(GPS_CONNECT_TIMEOUT);
+                accelerometer->read(PRE_IMPACT);
                 break;
         default:
-                Serial.println("Unhandled vehicle state!");
+                disable_interrupts();  // we don't want to record impacts that oddly occur while idle...
+                Serial.println("ERROR: unhandled vehicle state!");
                 break;
         }
 }
 
 /**
- * Read impact information from sensors when impact is detected.
- *
- * When an impact is detected, it is important that relevant data is collected
- * to ensure the impact may be evaluated by the AI system and road service
- * dispatching personell.
+ * Encapsulates log uploading.
  **/
-void accelerometer_z_high_interrupt_ISR /*RAM_ATTR*/()
+void upload_logs()
 {
-        acceleration = accelerometer.read();
-        environment  = environmental_sensor.read();     // [@] accelerate this process by reading from cache
-        gps_data_    = gps.read();                      // [@] acceleration this process by reading from cache
+        upload_impact_log();
+        upload_travel_log();
+}
+
+/**
+ * Uploads a single impact log, oldest first.
+ *
+ * @note Interrupts are disabled during this process to prevent unexpcted
+ *       errors.
+ **/
+void upload_impact_log()
+{
+        disable_interrupts();
+        impact_controller.upload_impact(""); // TODO: put link here
+        enable_interrupts();
+}
+
+/**
+ * Uploads a single travel log, oldest first.
+ *
+ * @note Interrupts are disabled during this process to prevent unexpected
+ *       errors.
+ **/
+void upload_travel_log()
+{
+        disable_interrupts();
+        travel_controller.upload_travel(""); // TODO: put link here
+        enable_interrupts();
+}
+
+/**
+ * Write complete impact information to temporary storage.
+ *
+ * @note interrupts are disabled during this process to prevent data corruption.
+ **/
+void log_impact()
+{
+        long start_time = millis();
+        disable_interrupts();
+        accelerometer->read(POST_IMPACT);
+        gps->read();
+        impact_controller.create_impact();
+        impact_controller.log_impact();
+        accelerometer->unlatch_interrupt();
+        enable_interrupts();
+        long elapsed_time = millis() - start_time;
+
+        Serial.printf("Impact logging took %u seconds!\n", elapsed_time);
+
+}
+
+/**
+ * Write travel information to temporary storage.
+ *
+ * @note interrupts are disabled during this process to prevent data corruption.
+ **/
+void log_travel()
+{
+        if (travel_controller.buffer_is_full()) {
+                disable_interrupts();
+                travel_controller.log_travel();
+                enable_interrupts();
+        } else {
+                travel_controller.create_travel();
+        }
+}
+
+/**
+ * Writes non-gps acceleration data to temporary storage.
+ *
+ * @note interrupts are disabled during this process to prevent data corruption.
+ **/
+void log_acceleration()
+{
+        disable_interrupts();
+        accelerometer->read(POST_IMPACT);
+        impact_controller.log_acceleration();
+        accelerometer->unlatch_interrupt();
+        enable_interrupts();
 }
 
 /**
@@ -173,11 +254,11 @@ void accelerometer_z_high_interrupt_ISR /*RAM_ATTR*/()
  **/
 void update_gps_cache()
 {
-        update_gps_year_cache(GPS_UPDATE_CACHE_YEAR_TIME);
-        update_gps_month_cache(GPS_UPDATE_CACHE_MONTH_TIME);
-        update_gps_day_cache(GPS_UPDATE_CACHE_DAY_TIME);
-        update_gps_hour_cache(GPS_UPDATE_CACHE_HOUR_TIME);
-        update_gps_minute_cache(GPS_UPDATE_CACHE_MINUTE_TIME);
+        update_gps_year_cache();
+        update_gps_month_cache();
+        update_gps_day_cache();
+        update_gps_hour_cache();
+        update_gps_minute_cache();
 }
 
 /**
@@ -187,10 +268,11 @@ void update_gps_cache()
  *
  * @see GPS_UPDATE_CACHE_YEAR_TIME
  **/
-void update_gps_year_cache(long timer)
+void update_gps_year_cache()
 {
+        static long gps_year_cache_timer = 0;
         if (millis() - gps_year_cache_timer > GPS_UPDATE_CACHE_YEAR_TIME) {
-                gps.update_cache(year);
+                gps->update_cache(YEAR);
                 gps_year_cache_timer = millis();
         }
 }
@@ -202,10 +284,11 @@ void update_gps_year_cache(long timer)
  *
  * @see GPS_UPDATE_CACHE_MONTH_TIME
  **/
-void update_gps_month_cache(long timer)
+void update_gps_month_cache()
 {
+        static long gps_month_cache_timer = 0;
         if (millis() - gps_month_cache_timer > GPS_UPDATE_CACHE_MONTH_TIME) {
-                gps.update_cache(month);
+                gps->update_cache(MONTH);
                 gps_month_cache_timer = millis();
         }
 }
@@ -217,10 +300,11 @@ void update_gps_month_cache(long timer)
  *
  * @see GPS_UPDATE_CACHE_DAY_TIME
  **/
-void update_gps_day_cache(long timer)
+void update_gps_day_cache()
 {
+        static long gps_day_cache_timer = 0;
         if (millis() - gps_day_cache_timer > GPS_UPDATE_CACHE_DAY_TIME) {
-                gps.update_cache(day);
+                gps->update_cache(DAY);
                 gps_day_cache_timer = millis();
         }
 }
@@ -232,10 +316,11 @@ void update_gps_day_cache(long timer)
  *
  * @see GPS_UPDATE_CACHE_HOUR_TIME
  **/
-void update_gps_hour_cache(long timer)
+void update_gps_hour_cache()
 {
+        static long gps_hour_cache_timer = 0;
         if (millis() - gps_hour_cache_timer > GPS_UPDATE_CACHE_HOUR_TIME) {
-                gps.update_cache(hour);
+                gps->update_cache(HOUR);
                 gps_hour_cache_timer = millis();
         }
 }
@@ -247,10 +332,11 @@ void update_gps_hour_cache(long timer)
  *
  * @see GPS_UPDATE_CACHE_MINUTE_TIME
  **/
-void update_gps_minute_cache(long timer)
+void update_gps_minute_cache()
 {
+        static long gps_minute_cache_timer = 0;
         if (millis() - gps_minute_cache_timer > GPS_UPDATE_CACHE_MINUTE_TIME){
-                gps.update_cache(minute);
+                gps->update_cache(MINUTE);
                 gps_minute_cache_timer = millis();
         }
 }
@@ -264,55 +350,11 @@ void update_gps_minute_cache(long timer)
  **/
 void update_environment_cache()
 {
+        static long environment_cache_timer = 0;
         if (millis() - environment_cache_timer > ENV_UPDATE_CACHE_TIME) {
-                environmental_sensor.update_cache();
+                environmental_sensor->update_cache();
                 environment_cache_timer = millis();
         }
-}
-
-/**
- * Writes non-gps acceleration data to temporary storage.
- *
- * @note interrupts are disabled during this process to prevent data corruption.
- **/
-void log_acceleration()
-{
-        disable_interrupts();
-        // [ ] impact impact_controller.create_non_gps_impact(
-                // environment,
-                //* update_gps_month_cache(long timer)/ acceleration,
-                // ACCELERATION_BUFFER_LENGTH);
-        impact_controller.log_impact(storage, impact);
-        enable_interrupts();
-}
-
-/**
- * Write complete impact information to temporary storage.
- *
- * @note interrupts are disabled during this process to prevent data corruption.
- **/
-void log_impact()
-{
-        disable_interrupts();
-        impact = impact_controller.create_impact(gps_data_,
-                                                 environment,
-                                                 acceleration);
-        impact_controller.log_impact(storage, impact);
-        enable_interrupts();
-}
-
-/**
- * Write travel information to temporary storage.
- *
- * @note interrupts are disabled during this process to prevent data corruption.
- **/
-void log_travel()
-{
-        disable_interrupts();
-        travel = travel_controller.create_travel(gps_data_, environment);
-        if (travel_controller.buffer_is_full())
-                travel_controller.log_travel(storage);
-        enable_interrupts();
 }
 
 /**
@@ -324,6 +366,7 @@ void log_travel()
  **/
 bool time_elapsed(long time)
 {
+        static long travel_recording_timer = 0;
         if (millis() - travel_recording_timer > time) {
                 travel_recording_timer = millis();
                 return true;
@@ -344,7 +387,7 @@ bool time_elapsed(long time)
 void enable_wifi()
 {
         disable_interrupts();
-        wifi.connect(WIFI_CONNECT_TIMEOUT);
+        wifi->connect(WIFI_CONNECT_TIMEOUT);
         enable_interrupts();
 }
 
@@ -357,32 +400,32 @@ void enable_wifi()
 void disable_wifi()
 {
         disable_interrupts();
-        wifi.disconnect();
+        wifi->disconnect();
         enable_interrupts();
 }
 
 /**
- * Uploads a single impact log, oldest first.
+ * Periodically get the vehicle state.
  *
- * @note Interrupts are disabled during this process to prevent unexpcted
- *       errors.
+ * @note edit VEHICLE_STATE_UPDATE_TIME to change how often the vehicle state
+ *              is checked.
  **/
-void upload_impact_log()
+vehicle_state get_vehicle_state()
 {
-        disable_interrupts();
-        impact_controller.upload_impact("http://roadreporter.us/map/upload_impact.php");
-        enable_interrupts();
+        static long elapsed_time = 0;
+        static vehicle_state current_vehicle_state = gps->get_vehicle_state();
+        if (millis() - elapsed_time >= VEHICLE_STATE_UPDATE_TIME) {
+                current_vehicle_state = gps->get_vehicle_state();
+                elapsed_time = millis();
+        }
+        return current_vehicle_state;
 }
 
 /**
- * Uploads a single travel log, oldest first.
- *
- * @note Interrupts are disabled during this process to prevent unexpected
- *       errors.
+ * Clarifies the use of accelerometer->interrupt_is_latched for this
+ * implementation.
  **/
-void upload_travel_log()
+bool impact_detected()
 {
-        disable_interrupts();
-        travel_controller.upload_travel("http://roadreporter.us/map/upload_travel.php");
-        enable_interrupts();
+        return accelerometer->interrupt_is_latched();
 }
