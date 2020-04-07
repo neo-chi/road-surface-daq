@@ -34,57 +34,57 @@ void WiFiManager::begin()
  **/
 void WiFiManager::connect(long timeout) {
         // Display network details.
-        Serial.println("Connecting to WiFi: ");
-        Serial.printf("SSID:\t%s\n", this->network_conf.ssid);
+        Serial.print("Connecting to WiFi: ");
+        Serial.printf("SSID:\t%s\t", this->network_conf.ssid);
         Serial.printf("PSK:\t%s\n", this->network_conf.psk);
 
         WiFi.mode(WIFI_OFF);
         WiFi.mode(WIFI_STA);
-        //WiFi.begin(this->network_conf.ssid, this->network_conf.psk);
+        WiFi.begin(this->network_conf.ssid, this->network_conf.psk);
         // Connection attempt **WITH** timeout.
-        // if (timeout > 0) {
-        //         long elapsed_time = 0;
-        //         int seconds_waiting = 0;
-        //         Serial.println("Attempting connection");
-        //         while (!this->is_connected()) {
-        //                 if (millis() - elapsed_time > 1000) {  // Print "." every second.
-        //                         Serial.print(".");
-        //                         elapsed_time = millis();
-        //                         seconds_waiting++;
-        //                 }
-        //                 if (seconds_waiting > 10) {  // Begin a newline every 10 seconds.
-        //                         Serial.println();
-        //                         seconds_waiting = 0;
-        //                 }
-        //                 if (elapsed_time > timeout) {  // Connection was **UNSUCCESSFUL**.
-        //                         break;
-        //                 }
-        //         }  // A connection was **SUCCESSFUL**.
-        //         if (this->is_connected()) {
-        //                 Serial.println("WiFi connected!");
-        //         } else {
-        //                 Serial.println("WiFi connection failed!");
-        //                 WiFi.disconnect();
-        //         }
-        // // Connection attempt **WITHOUT** timout.
-        // } else {
-        //         long elapsed_time = 0;
-        //         int seconds_waiting = 0;
-        //         Serial.println("Attempting connection");
-        //         while (!this->is_connected()) {
-        //                 if (millis() - elapsed_time > 1000) {  // Print "." every second.
-        //                         Serial.print(".");
-        //                         elapsed_time = millis();
-        //                         seconds_waiting++;
-        //                 }
-        //                 if (seconds_waiting > 10) {  // Begin a newline every 10 seconds.
-        //                         Serial.println();
-        //                         seconds_waiting = 0;
-        //                         break; // FIXME: remove this, for testing only.
-        //                 }
-        //         }  // A connection was **SUCCESSFUL**.
-        //         Serial.println("WiFi connected!");
-        // }
+        if (timeout > 0) {
+                long elapsed_time = 0;
+                int seconds_waiting = 0;
+                Serial.println("Attempting connection");
+                while (!this->is_connected()) {
+                        if (millis() - elapsed_time > 1000) {  // Print "." every second.
+                                Serial.print(".");
+                                elapsed_time = millis();
+                                seconds_waiting++;
+                        }
+                        if (seconds_waiting > 10) {  // Begin a newline every 10 seconds.
+                                Serial.println();
+                                seconds_waiting = 0;
+                        }
+                        if (elapsed_time > timeout) {  // Connection was **UNSUCCESSFUL**.
+                                break;
+                        }
+                }  // A connection was **SUCCESSFUL**.
+                if (this->is_connected()) {
+                        Serial.println("WiFi connected!");
+                } else {
+                        Serial.println("WiFi connection failed!");
+                        WiFi.disconnect();
+                }
+        // Connection attempt **WITHOUT** timout.
+        } else {
+                long elapsed_time = 0;
+                int seconds_waiting = 0;
+                Serial.println("Attempting connection");
+                while (!this->is_connected()) {
+                        if (millis() - elapsed_time > 1000) {  // Print "." every second.
+                                Serial.print(".");
+                                elapsed_time = millis();
+                                seconds_waiting++;
+                        }
+                        if (seconds_waiting > 10) {  // Begin a newline every 10 seconds.
+                                Serial.println();
+                                seconds_waiting = 0;
+                                break; // FIXME: remove this, for testing only.
+                        }
+                }  // A connection was **SUCCESSFUL**.
+                Serial.println("WiFi connected!");
+        }
 }
 
 /**
@@ -93,7 +93,7 @@ void WiFiManager::connect(long timeout) {
 void WiFiManager::disconnect()
 {
         WiFi.mode(WIFI_OFF);
-        Serial.printf("WiFi disconnected!");
+        Serial.println("WiFi disconnected!");
 }
 
 /**

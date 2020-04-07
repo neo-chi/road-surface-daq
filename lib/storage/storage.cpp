@@ -36,13 +36,11 @@ void Storage::begin()
  **/
 void Storage::mkdir(char *path)
 {
-        Serial.print("Making directory at ");
-        Serial.print(path);
-        Serial.print(" ... ");
+        Serial.printf("storage: making directory at \"%s\"...\n", path);
         if (file_system.exists(path)) {
-                Serial.printf("The directory %s already exists!", path);
+                Serial.printf("The directory \"%s\" already exists!\n", path);
         } else {
-                Serial.printf("The directory %s does not exist, creating...", path);
+                Serial.printf("The directory \"%s\" does not exist, creating...", path);
                 if (file_system.mkdir(path))
                         Serial.println("complete!");
                 else
@@ -57,11 +55,8 @@ void Storage::mkdir(char *path)
  **/
 void Storage::mv(char *path_from, char *path_to)
 {
-        Serial.print("Moving ");
-        Serial.print(path_from);
-        Serial.print(" to ");
-        Serial.print(path_to);
-        Serial.print(" ... ");
+        Serial.printf("storage: moving \"%s\" to \"%s\"...", path_from, path_to);
+>>>>>>> src(*): add IRAM_ATTR to methods, increase speed:src/storage/storage.cpp
         if (file_system.rename(path_from, path_to))
                 Serial.println("Complete!");
         else
@@ -141,7 +136,7 @@ void Storage::rename(char *path_from, char *path_to)
  **/
 void Storage::rm(char *path)
 {
-        Serial.printf("Removing file at %s ...", path);
+        Serial.printf("storage: removing file at \"%s\"...", path);
         if (file_system.exists(path)) {
                 Serial.printf("file found, removing...");
                 if (file_system.remove(path))
@@ -149,7 +144,7 @@ void Storage::rm(char *path)
                 else
                         Serial.printf("Failure!\n");
         } else {
-                Serial.printf("file not found! Quitting.");
+                Serial.printf("file not found! quitting.\n");
         }
 }
 
@@ -160,7 +155,7 @@ void Storage::rm(char *path)
  **/
 void Storage::rmdir(char *path)
 {
-        Serial.printf("Removing directory at %s\ ...", path);
+        Serial.printf("storage: removing directory at \"%s\"...", path);
         if (file_system.exists(path)) {
                 Serial.printf("directory found, removing...");
                 if (file_system.rmdir(path))
@@ -168,7 +163,7 @@ void Storage::rmdir(char *path)
                 else
                         Serial.printf("Failure!\n");
         } else {
-                Serial.printf("directory not found! Quitting.");
+                Serial.printf("directory not found! quitting.\n");
         }
 }
 
@@ -216,16 +211,16 @@ void Storage::write(char *path, uint8_t *buf, size_t bytes_to_write)
 {
         // Log whether file is being overwritten.
         if (file_system.exists(path))
-                Serial.printf("%s exists, overwriting...\n", path);
+                Serial.printf("\"%s\" exists, overwriting...\n", path);
         else
-                Serial.printf("%s does not exist, writing new file...\n", path);
+                Serial.printf("\"%s\" does not exist, writing new file...\n", path);
 
         // Open file for writing/overwriting.
         File file = file_system.open(path, FILE_WRITE);
-        if (file != NULL) {
-                Serial.printf("%s opened! Writing...\n", path);
+        if (file) {
+                Serial.printf("\"%s\" opened! Writing...\n", path);
         } else {
-                Serial.printf("Could not open %s...exiting!\n", path);
+                Serial.printf("could not open \"%s\"...exiting!\n", path);
                 return;
         }
 
@@ -234,19 +229,19 @@ void Storage::write(char *path, uint8_t *buf, size_t bytes_to_write)
         size_t bytes_written    = 0;
         size_t bytes_rem        = bytes_to_write;
         while (bytes_rem) {
-                Serial.printf("Bytes remaining = %u\n", bytes_rem);
+                //Serial.printf("bytes remaining = %u\n", bytes_rem);
                 if (bytes_rem > 512) {
                         bytes_written   = file.write(buf + buf_idx, 512);
                         bytes_rem       -= bytes_written;
                         buf_idx         += bytes_written;
-                        Serial.printf("Wrote %u bytes\n", bytes_written);
+                        //Serial.printf("wrote %u bytes\n", bytes_written);
                 } else {
                         bytes_written   = file.write(buf + buf_idx, bytes_rem);
                         bytes_rem       -= bytes_written;
                         buf_idx         += bytes_written;
-                        Serial.printf("Wrote %u bytes\n", bytes_written);
+                        //Serial.printf("wrote %u bytes\n", bytes_written);
                 }
         }
-        Serial.printf("File write to %s Complete!\n", path);
+        Serial.printf("file write to \"%s\" complete!\n", path);
         file.close();
 }

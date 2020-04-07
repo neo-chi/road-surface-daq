@@ -83,19 +83,19 @@ void GPS::connect_to_satellites(long timeout)
         static const int DEFAULT_TIMEOUT  = 0;
         static long elapsed_time          = 0;
         if (timeout == DEFAULT_TIMEOUT) {
-                Serial.print("gps: waiting until satellite connection is received...");
+                Serial.println("gps: waiting until satellite connection is received...");
                 while (!is_connected_to_satellites()) {
                         _display_seconds_waiting();
                 }
         } else {
-                Serial.printf("gps: waiting %d milliseconds for satellite connection...", timeout);
+                Serial.printf("gps: waiting %d milliseconds for satellite connection...\n", timeout);
                 while (millis() - elapsed_time < timeout && !is_connected_to_satellites()) {
                         _display_seconds_waiting();
                         elapsed_time = millis();
                 }
         }
         if (this->is_connected_to_satellites()) {
-                Serial.printf("gps: sattelites connected! %d satellites", driver.getSIV());
+                Serial.printf("gps: sattelites connected! %d satellites\n", driver.getSIV());
         } else {
                 Serial.println("gps: could not connect to satellites!");
         }
