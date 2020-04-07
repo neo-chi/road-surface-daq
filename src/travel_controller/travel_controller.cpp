@@ -198,9 +198,9 @@ void TravelController::_generate_log_directory()
 {
         Serial.print("travel controller: generating log directory...");
         sprintf(log_dir, "/%04d%02d%02d",
-                travel_buffer[0].year,
-                travel_buffer[0].month,
-                travel_buffer[0].day);
+                gps->data.year,
+                gps->data.month,
+                gps->data.day);
         Serial.println("complete!");
 }
 
@@ -208,9 +208,9 @@ void TravelController::_generate_log_filename()
 {
         Serial.print("travel controller: generating log filename...");
         sprintf(log_filename, "%02d%02d%02d.trv",
-                travel_buffer[0].hour,
-                travel_buffer[0].minute,
-                travel_buffer[0].second);
+                gps->data.hour,
+                gps->data.minute,
+                gps->data.second);
         Serial.println("complete!");
 }
 

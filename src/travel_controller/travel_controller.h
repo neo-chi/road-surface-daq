@@ -8,7 +8,7 @@
 #include "HTTPClient.h"
 
 #define TRAVEL_LOG_SIZE_MAX 10240
-#define TRAVEL_NUMBER_OF_LOGS_MAX 60
+#define TRAVEL_NUMBER_OF_LOGS_MAX 12
 
 /**
  * Aggregates data relevant to recording and analysing healthy roads.

@@ -79,7 +79,7 @@ acceleration_data Accelerometer::read()
  * Unlatch the interrupt, allowing the accelerometer to trigger interrupts
  * again.
  **/
-void Accelerometer::unlatch_interrupt()
+void IRAM_ATTR Accelerometer::unlatch_interrupt()
 {
         Serial.print("acclerometer: unlatching interrupt...");
         // Read the LIS3DH INT1SRC register. This unlatches the interrupt.
@@ -99,7 +99,7 @@ void Accelerometer::unlatch_interrupt()
  *
  * @returns volatile bool
  **/
-volatile bool Accelerometer::interrupt_is_latched()
+volatile bool IRAM_ATTR Accelerometer::interrupt_is_latched()
 {
         if (interrupt_has_occured)
                 return true;
