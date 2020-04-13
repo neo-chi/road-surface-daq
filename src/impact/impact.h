@@ -9,7 +9,6 @@
 
 #define IMPACT_NUM_LOGS_MAX ACC_BUF_LEN + 1  // 1 line of impact information,
                                              // plus each line of acceleration
-
 class Impact : public Loggable
 {
         public:
