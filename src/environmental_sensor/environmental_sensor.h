@@ -46,6 +46,11 @@ class EnvironmentalSensor
                 void                    read();
                 void			update_cache();
                 environmental_data	data;
+
+                void  populate();
+                float temperature;
+                float humidity;
+                float pressure;
         private:
                 Adafruit_BME280		driver;
                 bool			cache_is_initialized = false;

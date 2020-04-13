@@ -15,7 +15,7 @@
  *
  * The WiFiManager implements a driver native to the ESP32 and therefore, will
  * not need any additional libraries beyond those developed by espressif.
-/******************************************************************************/
+*******************************************************************************/
 #pragma once
 
 #include "Arduino.h"

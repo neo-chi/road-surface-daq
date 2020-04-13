@@ -1,68 +1,18 @@
 # Road Surface Data Acquistion System
 
 ## TODO
+- [ ] implement camera, implement manual upload (database searches based on imageFileName)
+- [ ] implement recursive file search and upload
+- [ ] implement file removal after successful upload
 
-- [ ] file manager
-- [ ] configuration file
-- [ ] wifi config server
 
-Table of contents
+### Actions
 
-## Road Map
-
-- [ ] **Debug/Logging system**
-
-> A logger for every component in this system that reports status updates,
-> processing information, errors, etc., all to a log file on the SD card, or
-> emailed to me.
-
-- [ ] Multi-Core Processing
-
-## Actors
-
-### Road Surface Dispatcher
-
-### Artificial Intelligence
-
-### Researchers
-
-## Use Cases
-
-* Road Surface Dispatcher
-  * Collect poor road health information
-    * date
-    * time
-    * location
-    * vehicle speed
-    * severity (acceleration, AI)
-    * image
-  * Collect good road health information
-    * location
-    * date
-    * time
-    * vehicle speed
-
-* Artificial Intelligence
-  * Collect poor road health information with additional information
-    * date
-    * time
-    * location
-    * acceleration data set
-    * **additional information**
-      * temperature
-      * humidity
-      * pressure
- * Collect good road health information with additional information
-    * date
-    * time
-    * location
-    * **additional information**
-      * temperature
-      * humidity
-      * pressure
-
-* Researchers
-  * same as AI
+- [x] Test DataCollector
+- [x] Test Storage
+- [] Test DataCollector -> Storage mediation
+- [] Test Uploader
+- [] Test Stroage -> Uploader mediation
 
 ## Table of Contents
 
@@ -177,8 +127,7 @@ the hardware capabilities of the Raspberry Pi Zero W.
 
 The ESP32-WROOM-32D serves as the primary microcontroller of this system.
 Thus, it suppports the most connections to sensors.
-* The I2C interfaces with the LIS3DH accelerometer, GPS, and environmental
-sensor.
+* The I2C interfaces with the LIS3DH accelerometer, GPS, and environmental sensor.
 * The SPI interfaces with the SD card.
 
 | ESP32-WROOM-32D | LIS3DH | GPS | SD Card | Environmental |

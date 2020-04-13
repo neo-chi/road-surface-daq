@@ -28,49 +28,9 @@ void GPS::begin()
         driver.setI2COutput(COM_TYPE_UBX);
         driver.setNavigationFrequency(NAVIGATION_FREQ);
         driver.saveConfiguration();
+        if (this->is_connected_to_satellites())
+                __set_cache_update_timers();
         Serial.printf("complete!\n");
-}
-
-/**
- * Read GPS data.
- *
- * @returns gps_data
- **/
-void IRAM_ATTR GPS::read()
-{
-        if (!cache_is_initialized) {
-                Serial.printf("gps: initializing cache...");
-                update_cache(YEAR);
-                update_cache(MONTH);
-                update_cache(DAY);
-                update_cache(HOUR);
-                update_cache(MINUTE);
-                cache_is_initialized = true;
-                Serial.printf("complete!\n");
-        }
-        Serial.println("gps: reading...");
-        Serial.print("gps: reading from cache...");
-        Serial.println("complete!");
-
-        Serial.print("gps: reading second...");
-        data.second = driver.getSecond();
-        Serial.println("complete!");
-
-        Serial.print("gps: reading millisecond...");
-        data.millisecond = driver.getMillisecond();
-        Serial.println("Complete!");
-
-        Serial.print("gps: reading latitude...");
-        data.latitude = driver.getLatitude();
-        Serial.println("complete!");
-
-        Serial.print("gps: reading longitude...");
-        data.longitude = driver.getLongitude();
-        Serial.println("complete!");
-
-        Serial.print("gps: reading speed...");
-        data.speed = driver.getGroundSpeed();
-        Serial.println("complete!");
 }
 
 /**
@@ -94,8 +54,10 @@ void GPS::connect_to_satellites(long timeout)
                         elapsed_time = millis();
                 }
         }
-        if (this->is_connected_to_satellites()) {
+        if (is_connected_to_satellites()) {
                 Serial.printf("gps: sattelites connected! %d satellites\n", driver.getSIV());
+                if (!__cache_timers_set)
+                        __set_cache_update_timers();
         } else {
                 Serial.println("gps: could not connect to satellites!");
         }
@@ -141,45 +103,6 @@ vehicle_state GPS::get_vehicle_state()
 
 }
 
-/**
- * Refreshes the cached gps data.
- *
- * @param gps_cache data to be refreshed.
- **/
-void GPS::update_cache(gps_cache type)
-{
-        switch(type) {
-        case YEAR:
-                Serial.print("gps: updating cached year... ");
-                data.year = driver.getYear();
-                Serial.println("complete!");
-                break;
-        case MONTH:
-                Serial.print("gps: updating cached month... ");
-                data.month = driver.getMonth();
-                Serial.println("complete!");
-                break;
-        case DAY:
-                Serial.print("gps: updating cached day... ");
-                data.day = driver.getDay();
-                Serial.println("complete!");
-                break;
-        case HOUR:
-                Serial.print("gps: updating cached hour... ");
-                data.hour = driver.getHour();
-                Serial.println("complete!");
-                break;
-        case MINUTE:
-                Serial.print("gps: updating cached minute... ");
-                data.minute = driver.getMinute();
-                   Serial.println("complete!");
-                break;
-        default:
-                Serial.println("gps: unhandled gps cache type!");
-                break;
-        }
-}
-
 void GPS::_display_seconds_waiting()
 {
         static const int  ONE_SECOND      = 1000;
@@ -194,4 +117,81 @@ void GPS::_display_seconds_waiting()
                 elapsed_time = millis();
                 seconds_waiting++;
         }
+}
+
+void GPS::populate()
+{
+        __update_second();
+        __update_minute();
+        __update_hour();
+        __update_day_month_year();
+        __update_location();
+        __update_vehicle_speed();
+}
+
+void GPS::__set_cache_update_timers()
+{
+        Serial.println("gps: set cache update timers");
+        __cache_update_timer[SECOND] = SECOND_MILLIS - (long)(driver.getMillisecond());
+        __cache_update_timer[MINUTE] = MINUTE_MILLIS - (long)(driver.getSecond() * SECOND_MILLIS);
+        __cache_update_timer[HOUR]   = HOUR_MILLIS   - (long)(driver.getMinute() * MINUTE_MILLIS);
+        __cache_update_timer[DAY]    = DAY_MILLIS    - (long)(driver.getHour()   * HOUR_MILLIS);
+        datetime.set_year(driver.getYear());
+        datetime.set_month(driver.getMonth());
+        datetime.set_day(driver.getDay());
+        datetime.set_hour(driver.getHour());
+        datetime.set_minute(driver.getMinute());
+        datetime.set_second(driver.getSecond());
+        __cache_timers_set = true;
+}
+
+void GPS::__update_second()
+{
+        static long elapsed_time{__cache_update_timer[SECOND]};
+        if (millis() - elapsed_time >= SECOND_MILLIS) {
+                Serial.println("updated second"); // TODO: remove me
+                datetime.set_second(driver.getSecond());
+                elapsed_time = millis();
+        }
+}
+
+void GPS::__update_minute()
+{
+        static long elapsed_time{__cache_update_timer[MINUTE]};
+        if (millis() - elapsed_time >= MINUTE_MILLIS) {
+                Serial.println("updated minute"); // TODO: remove me
+                datetime.set_minute(driver.getMinute());
+                elapsed_time = millis();
+        }
+}
+
+void GPS::__update_hour()
+{
+        static long elapsed_time{__cache_update_timer[HOUR]};
+        if (millis() - elapsed_time >= HOUR_MILLIS) {
+                Serial.println("updated hour"); // TODO: remove me
+                datetime.set_hour(driver.getHour());
+                elapsed_time = millis();
+        }
+}
+
+void GPS::__update_day_month_year()
+{
+        static long elapsed_time{__cache_update_timer[DAY]};
+        if (millis() - elapsed_time >= DAY_MILLIS) {
+                datetime.set_day(driver.getDay());
+                datetime.set_month(driver.getMonth());
+                datetime.set_year(driver.getYear());
+                elapsed_time = millis();
+        }
+}
+
+void GPS::__update_location()
+{
+        location.set_location(driver.getLatitude(), driver.getLongitude());
+}
+
+void GPS::__update_vehicle_speed()
+{
+        vehicle_speed = driver.getGroundSpeed();
 }

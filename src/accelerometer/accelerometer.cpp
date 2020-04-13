@@ -237,3 +237,27 @@ void Accelerometer::_write_register_8(int reg, int value) {
         Wire.write(value);
         Wire.endTransmission();
 }
+
+void IRAM_ATTR Accelerometer::populate_acceleration(acc_buffer buffer)
+{
+        switch (buffer) {
+        case PRE_IMPACT:
+                for (size_t i = 0; i < ACC_PRE_IMPACT_LEN; i++) {
+                        driver.read();
+                        acceleration->x[i] = driver.x_g;
+                        acceleration->y[i] = driver.y_g;
+                        acceleration->z[i] = driver.z_g;
+                }
+                break;
+        case POST_IMPACT:
+                for (size_t i = ACC_PRE_IMPACT_LEN; i < ACC_BUF_LEN; i++) {
+                        driver.read();
+                        acceleration->x[i] = driver.x_g;
+                        acceleration->y[i] = driver.y_g;
+                        acceleration->z[i] = driver.z_g;
+                }
+                break;
+        default:
+                break;
+        }
+}

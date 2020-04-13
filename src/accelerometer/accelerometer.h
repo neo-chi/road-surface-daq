@@ -24,6 +24,7 @@
 
 #include "Arduino.h"
 #include "Adafruit_LIS3DH.h"
+#include "acceleration.h"
 
 #define PRE_IMP_BUF_LEN         400
 #define POST_IMP_BUF_LEN        800
@@ -67,6 +68,10 @@ class Accelerometer
                 volatile bool           interrupt_is_latched();
 		volatile bool		interrupt_has_occured = false;
                 acceleration_data       impact[ACC_BUF_LEN];
+
+                void                    populate_acceleration(acc_buffer buffer);
+                Acceleration            *acceleration = new Acceleration;
+
         private:
                 Adafruit_LIS3DH         driver;
                 void                    _set_data_rate();
