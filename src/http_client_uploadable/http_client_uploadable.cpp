@@ -1,8 +1,8 @@
 #include "http_client_uploadable.h"
 
-HTTPClientUploadable::HTTPClientUploadable(char *URL) : Uploadable()
+HTTPClientUploadable::HTTPClientUploadable() : Uploadable()
 {
-        _URL  = URL;
+        // nothing to do here...
 }
 
 HTTPClientUploadable::~HTTPClientUploadable()
@@ -13,21 +13,22 @@ HTTPClientUploadable::~HTTPClientUploadable()
 bool HTTPClientUploadable::upload()
 {
         bool __return_val = false;
+        static const char _URL[]{"http://roadreporter.us/data/log_upload.php"};
         HTTPClient http;
-        while (_num_uploads > 0) {
+        _num_uploads--;
+        while (_num_uploads >= 0) {
                 Serial.printf(
-                        "uploadable: uploading %s via HTTPS client to %s...",
+                        "uploadable: uploading %s via HTTP to %s...",
                         _uploads[_num_uploads].c_str(),
                         _URL
                 );
 
                 // Perform upload
                 http.begin(_URL);
+                http.setReuse(true);
                 http.addHeader("Content-Type", "application/x-www-form-urlencoded");
                 const int    http_code {http.POST(_uploads[_num_uploads])};
                 const String payload   {http.getString()};
-                http.end();
-                _uploads[_num_uploads].clear(); // remove the uploaded item
                 _num_uploads--;
 
                 if (http_code == 200) {
@@ -37,9 +38,10 @@ bool HTTPClientUploadable::upload()
                                 http_code,
                                 payload.c_str()
                         );
-                        continue;
+
                 } else {
                         __return_val = false;
+                        http.end();
                         _num_uploads = 0;
                         Serial.printf(
                                 "error uploading... http_code: %d -> %s exiting\n",
@@ -49,4 +51,7 @@ bool HTTPClientUploadable::upload()
                         break;
                 }
         } // end while
+        http.end();
+        _num_uploads = 0;
+        return __return_val;
 }

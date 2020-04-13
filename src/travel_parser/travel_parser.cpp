@@ -7,9 +7,8 @@ TravelParser::TravelParser() : Parser()
 
 Uploadable *TravelParser::parse_file(File file)
 {
-        Serial.printf("travel_parser: parsing %s...", file.name());
-        char URL[] {"http://roadreporter.us/data/log_upload.php"};
-        HTTPClientUploadable *uploadable = new HTTPClientUploadable(URL);
+        Serial.printf("travel_parser: parsing %s...\n", file.name());
+        static HTTPClientUploadable *uploadable = new HTTPClientUploadable();
         while (file.available()) {
                 String POST {file.readStringUntil('\n')};
                 POST.replace(" ", "+");      // datetime=YYYY-MM-DD+HH:MM:SS

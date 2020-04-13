@@ -21,8 +21,7 @@ ImpactParser::~ImpactParser()
 Uploadable *ImpactParser::parse_file(File file)
 {
         Serial.printf("impact_parser: parsing %s...", file.name());
-        char URL[] {"http://roadreporter.us/data/log_upload.php"};
-        HTTPClientUploadable *uploadable = new HTTPClientUploadable(URL);
+        HTTPClientUploadable *uploadable = new HTTPClientUploadable();
         if (file.available()) { // only reading one line...
                 String POST {file.readStringUntil('\n')};
                 POST.replace(" ", "+");      // datetime=YYYY-MM-DD+HH:MM:SS

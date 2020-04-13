@@ -20,7 +20,7 @@ void Travel::log()
         }
         if (log_is_full()) {
                 _set_dir(*_datetime);
-                _set_filename(*_datetime, ".trv");
+                _set_filename(*_datetime, "trv");
                 _set_path(_dir, _filename);
         }
         /* DEBUG */     Serial.printf(

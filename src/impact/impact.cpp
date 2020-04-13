@@ -21,7 +21,7 @@ void Impact::log()
         size_t number_of_bytes_written = 0;
         number_of_bytes_written += sprintf(
                 _log + number_of_bytes_written,
-                "%s,%s,ai_severity=5\n",
+                "%s,%s,ai_severity=10\n",
                 _datetime->to_string(),
                 _location->to_string()
         );
