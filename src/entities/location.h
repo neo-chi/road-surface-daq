@@ -15,6 +15,6 @@ class Location
                 int32_t get_latitude();
                 int32_t get_longitude();
         protected:
-                int32_t *latitude  = (int32_t*)malloc(sizeof(int32_t));
-                int32_t *longitude = (int32_t*)malloc(sizeof(int32_t));
+                int32_t *_latitude {(int32_t*)malloc(sizeof(int32_t))};
+                int32_t *_longitude{(int32_t*)malloc(sizeof(int32_t))};
 };

@@ -19,9 +19,9 @@ class Uploader
         private:
                 Storage      *storage;
                 WiFiManager  *wifi;
-                ImpactParser *impact_parser = new ImpactParser;
-                TravelParser *travel_parser = new TravelParser;
-                String __extension_of(File file);
-                void   __upload_travel(File file);
-                void   __upload_impact(File file);
+                ImpactParser *impact_parser {new ImpactParser};
+                TravelParser *travel_parser {new TravelParser};
+                String        _extension_of(File file);
+                void          _upload_travel(File file);
+                void          _upload_impact(File file);
 };

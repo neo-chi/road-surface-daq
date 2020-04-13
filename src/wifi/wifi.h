@@ -29,16 +29,16 @@ class WiFiManager
 {
         public:
                 WiFiManager(char *ssid, char*psk);
-                void            begin();
-                void            connect(long timeout = 0);
-                void            disconnect();
-                bool            is_connected();
-                void            set_ssid(char *ssid);
-                void            set_psk(char *psk);
+                void begin();
+                void connect(long timeout = 0);
+                void disconnect();
+                bool is_connected();
+                void set_ssid(char *ssid);
+                void set_psk(char *psk);
         private:
-                WiFiClient      driver;
+                WiFiClient _driver;
                 struct network_conf {
                         char ssid[SSID_SIZE_MAX];
                         char psk[PSK_SIZE_MAX];
-                } network_conf;
+                } _network_conf;
 };

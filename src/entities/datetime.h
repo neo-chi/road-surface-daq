@@ -4,17 +4,15 @@
 #include "date.h"
 #include "_time.h"
 
+#define SECOND_MILLIS               1000
+#define MINUTE_MILLIS               60000
+#define HOUR_MILLIS                 3600000
+#define DAY_MILLIS                  86400000
+
 class DateTime : public Date, public Time
 {
         public:
                 DateTime();
                 ~DateTime();
                 char *to_string();
-                void  set_datetime(Date date, Time time);
-                void  link_datetime(Date *date, Time *time);
-                Date  get_date();
-                Time  get_time();
-        protected:
-                Date *_date = new Date;
-                Time *_time = new Time;
 };

@@ -12,7 +12,8 @@ Accelerometer       *accelerometer        = new Accelerometer;
 GPS                 *gps                  = new GPS;
 EnvironmentalSensor *environmental_sensor = new EnvironmentalSensor;
 Storage             *storage              = new Storage;
-WiFiManager         *wifi                 = new WiFiManager("FBI van 2", "2059030897");
+WiFiManager         *wifi                 = new WiFiManager("FBI van 2",
+                                                            "2059030897");
 
 // Acceleration        *acceleration         = new Acceleration;
 Impact              *impact               = new Impact;
@@ -23,6 +24,9 @@ Uploader            *uploader             = new Uploader;
 // Clarity functions
 #define disable_interrupts() cli()
 #define enable_interrupts()  sei()
+
+#define VEHICLE_STATE_UPDATE_TIME 1000
+#define GPS_CONNECT_TIMEOUT       30000
 
 /**
  * Read impact information from sensors when impact is detected.
@@ -103,8 +107,8 @@ void loop()
                         log_impact();
                 if (time_elapsed(TRAVEL_LOG_PERIOD))
                         log_travel();
+                gps->read();
                 accelerometer->read();
-                gps->populate();
                 // update_environment_cache();
                 // update_gps_cache();
                 break;

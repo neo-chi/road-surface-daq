@@ -18,10 +18,10 @@ Location::~Location()
 char *Location::to_string()
 {
         // convert to google maps format
-        float _latitude  = ((float)*latitude) / 10000000;
-        float _longitude = ((float)*longitude) / 10000000;
-        char *result     = (char*)malloc(64 * sizeof(char));
-        sprintf(result, "latitude=%0.6f,longitude=%0.6f", _latitude, _longitude);
+        float latitude {((float)*_latitude) / 10000000};
+        float longitude{((float)*_longitude) / 10000000};
+        char  *result  {(char*)malloc(64 * sizeof(char))};
+        sprintf(result, "latitude=%0.6f,longitude=%0.6f", latitude, longitude);
         return result;
 }
 
@@ -33,26 +33,26 @@ void Location::set_location(int32_t latitude, int32_t longitude)
 
 void Location::link_location(int32_t *latitude, int32_t *longitude)
 {
-        this->latitude = latitude;
-        this->longitude = longitude;
+        this->_latitude = latitude;
+        this->_longitude = longitude;
 }
 
 int32_t Location::set_latitude(int32_t latitude)
 {
-        *this->latitude = latitude;
+        *this->_latitude = latitude;
 }
 
 int32_t Location::set_longitude(int32_t longitude)
 {
-        *this->longitude = longitude;
+        *this->_longitude = longitude;
 }
 
 int32_t Location::get_latitude()
 {
-        return *this->latitude;
+        return *this->_latitude;
 }
 
 int32_t Location::get_longitude()
 {
-        return *this->longitude;
+        return *this->_longitude;
 }

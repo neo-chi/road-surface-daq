@@ -2,7 +2,7 @@
 
 HTTPClientUploadable::HTTPClientUploadable(char *URL) : Uploadable()
 {
-        __URL  = URL;
+        _URL  = URL;
 }
 
 HTTPClientUploadable::~HTTPClientUploadable()
@@ -18,11 +18,11 @@ bool HTTPClientUploadable::upload()
                 Serial.printf(
                         "uploadable: uploading %s via HTTPS client to %s...",
                         _uploads[_num_uploads].c_str(),
-                        __URL
+                        _URL
                 );
 
                 // Perform upload
-                http.begin(__URL);
+                http.begin(_URL);
                 http.addHeader("Content-Type", "application/x-www-form-urlencoded");
                 const int    http_code {http.POST(_uploads[_num_uploads])};
                 const String payload   {http.getString()};

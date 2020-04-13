@@ -35,12 +35,12 @@ void WiFiManager::begin()
 void WiFiManager::connect(long timeout) {
         // Display network details.
         Serial.print("Connecting to WiFi: ");
-        Serial.printf("SSID:\t%s\t", this->network_conf.ssid);
-        Serial.printf("PSK:\t%s\n", this->network_conf.psk);
+        Serial.printf("SSID:\t%s\t", this->_network_conf.ssid);
+        Serial.printf("PSK:\t%s\n", this->_network_conf.psk);
 
         WiFi.mode(WIFI_OFF);
         WiFi.mode(WIFI_STA);
-        WiFi.begin(this->network_conf.ssid, this->network_conf.psk);
+        WiFi.begin(this->_network_conf.ssid, this->_network_conf.psk);
         // Connection attempt **WITH** timeout.
         if (timeout > 0) {
                 long elapsed_time = 0;
@@ -117,7 +117,7 @@ bool WiFiManager::is_connected()
 void WiFiManager::set_ssid(char *ssid)
 {
         Serial.printf("Updated WiFi SSID to %s\n", ssid);
-        strcpy(this->network_conf.ssid, ssid);
+        strcpy(this->_network_conf.ssid, ssid);
 }
 
 /**
@@ -128,6 +128,6 @@ void WiFiManager::set_ssid(char *ssid)
 void WiFiManager::set_psk(char *psk)
 {
         Serial.printf("Updated WiFi PSK to %s\n", psk);
-        strcpy(this->network_conf.psk, psk);
+        strcpy(this->_network_conf.psk, psk);
 }
 

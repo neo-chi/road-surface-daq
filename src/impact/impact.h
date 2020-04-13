@@ -21,10 +21,10 @@ class Impact : public Loggable
                 void point_to(Acceleration *acceleration);
                 void point_to(int32_t&      vehicle_speed);
         private:
-                DateTime     *__datetime       = new DateTime;
-                Location     *__location       = new Location;
-                Environment  *__environment    = new Environment;
-                Acceleration *__acceleration   = new Acceleration;
-                int32_t      *__vehicle_speed  = (int32_t*)malloc(sizeof(int32_t));
-                int           __num_logs       = 0;
+                DateTime     *_datetime     {new DateTime};
+                Location     *_location     {new Location};
+                Environment  *_environment  {new Environment};
+                Acceleration *_acceleration {new Acceleration};
+                int32_t      *_vehicle_speed{(int32_t*)malloc(sizeof(int32_t))};
+                int           _num_logs     {0};
 };
