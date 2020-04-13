@@ -66,7 +66,7 @@ void IRAM_ATTR Accelerometer::read(buffer buffer_to_write)
  **/
 void IRAM_ATTR Accelerometer::unlatch_interrupt()
 {
-        Serial.print("acclerometer: unlatching interrupt...");
+        Serial.print("accelerometer: unlatching interrupt...");
         // Read the LIS3DH INT1SRC register. This unlatches the interrupt.
         Wire.beginTransmission(LIS3DH_DEFAULT_ADDRESS);
         Wire.write(LIS3DH_REG_INT1SRC);

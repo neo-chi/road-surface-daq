@@ -7,9 +7,7 @@
 class HTTPClientUploadable : public Uploadable
 {
         public:
-                HTTPClientUploadable(char *URL);
+                HTTPClientUploadable();
                 ~HTTPClientUploadable();
                 bool upload();
-        private:
-                char *_URL{(char*)malloc(255 * sizeof(char))};
 };

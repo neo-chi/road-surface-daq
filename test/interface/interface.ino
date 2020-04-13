@@ -8,18 +8,18 @@
 
 #include "uploader.h"
 
-Accelerometer       *accelerometer        = new Accelerometer;
-GPS                 *gps                  = new GPS;
-EnvironmentalSensor *environmental_sensor = new EnvironmentalSensor;
-Storage             *storage              = new Storage;
-WiFiManager         *wifi                 = new WiFiManager("FBI van 2",
-                                                            "2059030897");
+static Accelerometer       *accelerometer        = new Accelerometer;
+static GPS                 *gps                  = new GPS;
+static EnvironmentalSensor *environmental_sensor = new EnvironmentalSensor;
+static Storage             *storage              = new Storage;
+static WiFiManager         *wifi                 = new WiFiManager("FBI van 2",
+                                                                "2059030897");
 
 // Acceleration        *acceleration         = new Acceleration;
-Impact              *impact               = new Impact;
-Travel              *travel               = new Travel;
+static Impact              *impact               = new Impact;
+static Travel              *travel               = new Travel;
 
-Uploader            *uploader             = new Uploader;
+static Uploader            *uploader             = new Uploader;
 
 // Clarity functions
 #define disable_interrupts() cli()
@@ -65,7 +65,7 @@ void setup()
         accelerometer->begin();
         gps->begin();
         accelerometer->unlatch_interrupt();
-        // environmental_sensor->begin();
+        environmental_sensor->begin();
 
         // Ensure interrupt is unlatched to prevent accidental logging.
         // gps->connect_to_satellites(GPS_CONNECT_TIMEOUT);
@@ -90,15 +90,9 @@ void setup()
 
 void loop()
 {
-        // TODO: remove log files after uploading
-        //switch (get_vehicle_state()) {
-        switch(MOVING) {
+        switch(get_vehicle_state()) {
         case IDLE:
-                disable_interrupts();  // we don't want to record impacts that oddly occur while idle...
-                // if (wifi->is_connected())
-                //         upload_logs();
-                // else
-                //         enable_wifi();
+                disable_interrupts();
                 uploader->begin(storage, wifi); // dependency injection
                 break;
         case MOVING:
@@ -109,16 +103,14 @@ void loop()
                         log_travel();
                 gps->read();
                 accelerometer->read();
-                // update_environment_cache();
-                // update_gps_cache();
                 break;
         case UNKNOWN:
                 enable_interrupts();
-                if (impact_detected())
-                        log_acceleration(); // there's a problem here!
-                if (!gps->is_connected_to_satellites())
-                        gps->connect_to_satellites(GPS_CONNECT_TIMEOUT);
-                accelerometer->read();
+                // if (impact_detected())
+                //         log_acceleration(); // there's a problem here!
+                // if (!gps->is_connected_to_satellites())
+                //         gps->connect_to_satellites(GPS_CONNECT_TIMEOUT);
+                // accelerometer->read();
                 break;
         default:
                 disable_interrupts();  // we don't want to record impacts that oddly occur while idle...

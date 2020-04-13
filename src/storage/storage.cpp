@@ -21,10 +21,11 @@ Storage::Storage() : file_system(SD)
 
 void Storage::begin()
 {
-        if (SD.begin())
+        while(!SD.begin()) {
+                Serial.println("storage: waiting to detect sd card...");
+                delay(5000);
+        }
                 Serial.println("storage: succesfully mounted SD card!");
-        else
-                Serial.println("storage: SD card mount failed!");
 }
 
 /**
@@ -37,6 +38,23 @@ void Storage::write(Loggable *loggable)
         write(loggable->get_path(), loggable->get_log(), loggable->get_size());
         loggable->reset();
         Serial.println("complete!");
+}
+
+/**
+ * Appends the file extension ".up" to the file.
+ *
+ * @note files with this extension will be ignored when uploading.
+ **/
+void Storage::archive(File file)
+{
+        String old_filename{file.name()};
+        String new_filename{file.name()};
+        new_filename.concat(".up");
+        Serial.printf("", file.name());
+        Serial.printf("storage: archiving %s -> %s...", old_filename.c_str(), new_filename.c_str());
+        file_system.rename(old_filename, new_filename);
+        Serial.println("complete!");
+
 }
 
 File Storage::get_uploadable_file(const char *dir)
@@ -59,50 +77,16 @@ File Storage::get_uploadable_file(const char *dir)
         }
 }
 
-void Storage::get_uploadable_file(File *file, int level)
-{
-        File next_file;
-        File directory;
-        while (next_file = file->openNextFile()) {
-                Serial.println(next_file.name());
-                if (_is_uploadable(next_file)) {
-                        *file = next_file;
-                        return;
-                }
-                if (next_file.isDirectory()) {
-                        directory = next_file;
-                        while (next_file = directory.openNextFile()) {
-                                Serial.println(next_file.name());
-                                if (_is_uploadable(next_file)) {
-                                        *file = next_file;
-                                        return;
-                                }
-                        }
-                }
-        }
-}
-
-bool Storage::dir_has_uploadable_file(const char *dir)
-{
-        Serial.printf("searching directory %s\n", dir);
-        File directory {file_system.open(dir)};
-        while (File file = directory.openNextFile()) {
-                if (_is_uploadable(file))
-                        return true;
-        }
-
-}
-
 bool Storage::_is_uploadable(File file)
 {
-        // Serial.printf("storage: checking if %s is uploadable...", file.name());
+        // Serial.printf("\nstorage: checking if %s is uploadable...\n", file.name());
         const String filename  {file.name()};
         const String extension {filename.substring(filename.lastIndexOf("."))};
-        if (extension == ".trv" || extension == ".TRv" || extension == ".tRv") {
+        if (extension == ".trv" || extension == ".TRv") {
                 // Serial.printf("complete! %s is uploadable\n", file.name());
                 // Serial.println("complete!");
                 return true;
-        } else if (extension == ".imp") {
+        } else if (extension == ".imp" || extension == ".IMp") {
                 // Serial.printf("complete! %s is uploadable\n", file.name());
                 // Serial.println("complete!");
                 return true;
@@ -111,30 +95,6 @@ bool Storage::_is_uploadable(File file)
                 // Serial.println("complete!");
                 return false;
         }
-}
-
-/**
- * Appends the file extension ".up" to the file.
- *
- * @note files with this extension will be ignored when uploading.
- **/
-void Storage::archive(File file)
-{
-        Serial.printf("storage: archiving %s...", file.name());
-        char *old_filename = (char*)malloc(64 * sizeof(char));
-        strcpy(old_filename, file.name());
-
-        char *new_filename = (char*)malloc(64 * sizeof(char));
-        strcpy(new_filename, old_filename);
-        strcat(new_filename, ".up");
-
-        file_system.rename(
-                file.name(),
-                new_filename
-        );
-        // Serial.printf("complete! %s -> %s\n", old_filename, new_filename);
-        Serial.println("complete!");
-
 }
 
 

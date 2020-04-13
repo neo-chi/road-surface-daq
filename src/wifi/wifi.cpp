@@ -24,7 +24,6 @@ WiFiManager::WiFiManager(char *ssid, char *psk)
 
 void WiFiManager::begin()
 {
-
 }
 
 /**
@@ -38,6 +37,9 @@ void WiFiManager::connect(long timeout) {
         Serial.printf("SSID:\t%s\t", this->_network_conf.ssid);
         Serial.printf("PSK:\t%s\n", this->_network_conf.psk);
 
+        if (this->is_connected())
+                return;
+
         WiFi.mode(WIFI_OFF);
         WiFi.mode(WIFI_STA);
         WiFi.begin(this->_network_conf.ssid, this->_network_conf.psk);
@@ -45,7 +47,7 @@ void WiFiManager::connect(long timeout) {
         if (timeout > 0) {
                 long elapsed_time = 0;
                 int seconds_waiting = 0;
-                Serial.println("Attempting connection");
+                Serial.print("Attempting connection...");
                 while (!this->is_connected()) {
                         if (millis() - elapsed_time > 1000) {  // Print "." every second.
                                 Serial.print(".");
