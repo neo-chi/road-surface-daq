@@ -24,25 +24,6 @@ Uploader            *uploader             = new Uploader;
 #define disable_interrupts() cli()
 #define enable_interrupts()  sei()
 
-// Clarity constants
-#define THIRTY_MINUTES          1800000
-#define TEN_MINUTES             600000
-#define TEN_SECONDS             10000
-#define ONE_SECOND              1000
-
-// Update these to control functions.
-#define ACCELERATION_BUF_LEN            512
-#define GPS_CONNECT_TIMEOUT             TEN_SECONDS
-#define WIFI_CONNECT_TIMEOUT            TEN_SECONDS
-#define ENV_UPDATE_CACHE_TIME           TEN_MINUTES
-#define GPS_UPDATE_CACHE_YEAR_TIME      THIRTY_MINUTES
-#define GPS_UPDATE_CACHE_MONTH_TIME     THIRTY_MINUTES
-#define GPS_UPDATE_CACHE_DAY_TIME       THIRTY_MINUTES
-#define GPS_UPDATE_CACHE_HOUR_TIME      THIRTY_MINUTES
-#define GPS_UPDATE_CACHE_MINUTE_TIME    TEN_SECONDS
-#define TRAVEL_LOG_TIMER                ONE_SECOND
-#define VEHICLE_STATE_UPDATE_TIME       ONE_SECOND
-
 /**
  * Read impact information from sensors when impact is detected.
  *
@@ -57,13 +38,7 @@ void IRAM_ATTR accelerometer_z_high_ISR()
 }
 
 // User-defined configurations
-#define ACCELEROMETER_INT_PIN           17
-#define GPS_VEHICLE_IS_MOVING_SPEED     200  // UNITS: mm/s
-#define ACCELEROMETER_DATARATE          LIS3DH_DATARATE_LOWPOWER_1K6HZ
-#define ACCELEROMETER_RANGE             LIS3DH_RANGE_8_G
-#define IMPACT_LOG_SIZE_MAX             32000  // 32000 B
-#define TRAVEL_RECORD_PERIOD            5000   // 5 seconds
-
+#define ACCELEROMETER_INT_PIN 17
 
 void setup()
 {
@@ -89,11 +64,7 @@ void setup()
         // environmental_sensor->begin();
 
         // Ensure interrupt is unlatched to prevent accidental logging.
-        // accelerometer->unlatch_interrupt();
         // gps->connect_to_satellites(GPS_CONNECT_TIMEOUT);
-
-        // Assume vehicle is about to begin moving. We don't need wifi yet.
-        // disable_wifi();
 
         travel->point_to(gps->location);
         travel->point_to(gps->datetime);
@@ -132,8 +103,7 @@ void loop()
                         log_impact();
                 if (time_elapsed(TRAVEL_LOG_PERIOD))
                         log_travel();
-                accelerometer->populate_acceleration(PRE_IMPACT);
-                // accelerometer->read(PRE_IMPACT);
+                accelerometer->read();
                 gps->populate();
                 // update_environment_cache();
                 // update_gps_cache();
@@ -144,7 +114,7 @@ void loop()
                         log_acceleration(); // there's a problem here!
                 if (!gps->is_connected_to_satellites())
                         gps->connect_to_satellites(GPS_CONNECT_TIMEOUT);
-                accelerometer->read(PRE_IMPACT);
+                accelerometer->read();
                 break;
         default:
                 disable_interrupts();  // we don't want to record impacts that oddly occur while idle...
@@ -163,8 +133,7 @@ void log_impact()
         long start_time = millis();
 
         disable_interrupts();
-        // accelerometer->read(POST_IMPACT);
-        accelerometer->populate_acceleration(POST_IMPACT);
+        accelerometer->read(POST_IMPACT);
         impact->log();
         storage->write(impact);
         accelerometer->unlatch_interrupt();
@@ -181,17 +150,15 @@ void log_impact()
  **/
 void log_travel()
 {
-        if (travel->log_is_full()) {
+        if (!travel->log_is_full()) {
+                travel->log();
+        } else {
                 long start_time = millis();
-
                 disable_interrupts();
                 storage->write(travel);
                 enable_interrupts();
-
                 long elapsed_time = millis() - start_time;
                 Serial.printf("travel logging took %u ms!\n", elapsed_time);
-        } else {
-                travel->log();
         }
 }
 

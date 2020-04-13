@@ -39,44 +39,26 @@
  * @POST_IMPACT  buffer of acceleration data after an impact, detailing an
  *               impact response.
  **/
-enum acc_buffer {
+enum buffer {
         PRE_IMPACT,
         POST_IMPACT
-};
-
-/**
- * Aggregates accelerometer data.
- *
- * @x acceleration
- * @y acceleration
- * @z acceleration
- **/
-struct acceleration_data {
-        float x;
-        float y;
-        float z;
 };
 
 class Accelerometer
 {
         public:
                 Accelerometer();
-                void                    begin();
-                void                    read(acc_buffer buffer_to_write);
-                acceleration_data       read();
-                void                    unlatch_interrupt();
-                volatile bool           interrupt_is_latched();
-		volatile bool		interrupt_has_occured = false;
-                acceleration_data       impact[ACC_BUF_LEN];
-
-                void                    populate_acceleration(acc_buffer buffer);
-                Acceleration            *acceleration = new Acceleration;
-
+                void          begin();
+                void          read(buffer buffer_to_write = PRE_IMPACT);
+                void          unlatch_interrupt();
+                volatile bool interrupt_is_latched();
+                Acceleration  *acceleration = new Acceleration;
         private:
-                Adafruit_LIS3DH         driver;
-                void                    _set_data_rate();
-                void                    _set_range();
-                void                    _enable_z_high_interrupt();
-                void                    _start_driver();
-                void                    _write_register_8(int reg, int value);
+		volatile bool   __interrupt_has_occured = false;
+                Adafruit_LIS3DH __driver;
+                void            __set_data_rate();
+                void            __set_range();
+                void            __enable_z_high_interrupt();
+                void            __start_driver();
+                void            __write_register_8(int reg, int value);
 };
