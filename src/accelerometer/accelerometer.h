@@ -52,13 +52,13 @@ class Accelerometer
                 void          read(buffer buffer_to_write = PRE_IMPACT);
                 void          unlatch_interrupt();
                 volatile bool interrupt_is_latched();
-                Acceleration  *acceleration = new Acceleration;
+		volatile bool interrupt_has_occured{false};
+                Acceleration  *acceleration        {new Acceleration};
         private:
-		volatile bool   __interrupt_has_occured = false;
-                Adafruit_LIS3DH __driver;
-                void            __set_data_rate();
-                void            __set_range();
-                void            __enable_z_high_interrupt();
-                void            __start_driver();
-                void            __write_register_8(int reg, int value);
+                Adafruit_LIS3DH _driver;
+                void            _set_data_rate();
+                void            _set_range();
+                void            _enable_z_high_interrupt();
+                void            _start_driver();
+                void            _write_register_8(int reg, int value);
 };

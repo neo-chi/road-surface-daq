@@ -17,7 +17,7 @@ class Date
                 uint8_t  get_month();
                 uint8_t  get_day();
         protected:
-                uint16_t *year  = (uint16_t*)malloc(sizeof(uint16_t));
-                uint8_t  *month = (uint8_t*)malloc(sizeof(uint8_t));
-                uint8_t  *day   = (uint8_t*)malloc(sizeof(uint8_t));
+                uint16_t *_year {(uint16_t*)malloc(sizeof(uint16_t))};
+                uint8_t  *_month{(uint8_t*)malloc(sizeof(uint8_t))};
+                uint8_t  *_day  {(uint8_t*)malloc(sizeof(uint8_t))};
 };

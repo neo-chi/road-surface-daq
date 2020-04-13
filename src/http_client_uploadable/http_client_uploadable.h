@@ -11,5 +11,5 @@ class HTTPClientUploadable : public Uploadable
                 ~HTTPClientUploadable();
                 bool upload();
         private:
-                char *__URL = (char*)malloc(255 * sizeof(char));
+                char *_URL{(char*)malloc(255 * sizeof(char))};
 };

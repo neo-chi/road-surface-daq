@@ -24,34 +24,15 @@
 #include "Adafruit_Sensor.h"
 #include "Adafruit_BME280.h"
 #include "Wire.h"
-
-/**
- * Environmental sensor possible data readings.
- *
- * @temperature  degrees celcius
- * @humidity     %
- * @pressure     hPA
- **/
-struct environmental_data {
-        float temperature;
-        float humidity;
-        float pressure;
-};
+#include "environment.h"
 
 class EnvironmentalSensor
 {
         public:
                 EnvironmentalSensor();
-                void                    begin();
-                void                    read();
-                void			update_cache();
-                environmental_data	data;
-
-                void  populate();
-                float temperature;
-                float humidity;
-                float pressure;
+                void  begin();
+                void  read();
+                Environment environment;
         private:
-                Adafruit_BME280		driver;
-                bool			cache_is_initialized = false;
+                Adafruit_BME280 _driver;
 };

@@ -9,11 +9,11 @@ void Uploader::begin(Storage *storage, WiFiManager *wifi)
 
         if (wifi->is_connected() && file != NULL) {
                 Serial.printf("uploader: uploading %s...\n", file.name());
-                if (__extension_of(file) == TRV) {
-                        __upload_travel(file);
+                if (_extension_of(file) == TRV) {
+                        _upload_travel(file);
 
-                } else if (__extension_of(file) == IMP) {
-                        __upload_impact(file);
+                } else if (_extension_of(file) == IMP) {
+                        _upload_impact(file);
 
                 } else {
                         Serial.print("invalid file...");
@@ -22,21 +22,21 @@ void Uploader::begin(Storage *storage, WiFiManager *wifi)
         }
 }
 
-void Uploader::__upload_travel(File file)
+void Uploader::_upload_travel(File file)
 {
         const bool upload_successful{travel_parser->parse_file(file)->upload()};
         if (upload_successful)
                 storage->archive(file);
 }
 
-void Uploader::__upload_impact(File file)
+void Uploader::_upload_impact(File file)
 {
         const bool upload_successful{impact_parser->parse_file(file)->upload()};
         if (upload_successful)
                 storage->archive(file);
 }
 
-String Uploader::__extension_of(File file)
+String Uploader::_extension_of(File file)
 {
         const String filename  {file.name()};
         const String extension {filename.substring(filename.lastIndexOf("."))};

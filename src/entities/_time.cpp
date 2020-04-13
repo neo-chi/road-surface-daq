@@ -25,8 +25,8 @@ Time::~Time()
  **/
 char *Time::to_string()
 {
-        char *result = (char*)malloc(32 * sizeof(char));
-        sprintf(result, "%02d:%02d:%02d", *hour, *minute, *second);
+        char *result{(char*)malloc(32 * sizeof(char))};
+        sprintf(result, "%02d:%02d:%02d", *_hour, *_minute, *_second);
         return result;
 }
 
@@ -37,51 +37,32 @@ void Time::set_time(uint8_t hour, uint8_t minute, uint8_t second)
         set_second(second);
 }
 
-/**
- * Points this time's hour, minute, and second to input addresses.
- * When the source's time is updated, this object's time will automatically
- * reflect these changes.
- *
- * @param hour   pointer
- * @param minute pointer
- * @param second pointer
- **/
-void Time::link_time(uint8_t *hour, uint8_t *minute, uint8_t *second)
-{
-        if (hour != NULL)
-                this->hour = hour;
-        if (minute != NULL)
-                this->minute = minute;
-        if (second != NULL)
-                this->second = second;
-}
-
 void Time::set_hour(uint8_t hour)
 {
-        *this->hour = hour;
+        *this->_hour = hour;
 }
 
 void Time::set_minute(uint8_t minute)
 {
-        *this->minute = minute;
+        *this->_minute = minute;
 }
 
 void Time::set_second(uint8_t second)
 {
-        *this->second = second;
+        *this->_second = second;
 }
 
 uint8_t Time::get_hour()
 {
-        return *hour;
+        return *_hour;
 }
 
 uint8_t Time::get_minute()
 {
-        return *minute;
+        return *_minute;
 }
 
 uint8_t Time::get_second()
 {
-        return *second;
+        return *_second;
 }
