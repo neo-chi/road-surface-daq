@@ -217,7 +217,6 @@ void log_impact()
 
         long elapsed_time = millis() - start_time;
         Serial.printf("Impact logging took %u ms!\n", elapsed_time);
-
 }
 
 /**

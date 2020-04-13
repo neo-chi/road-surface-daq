@@ -64,3 +64,10 @@ void EnvironmentalSensor::update_cache()
         data.pressure          = driver.readPressure();
         Serial.printf("complete!\n");
 }
+
+void EnvironmentalSensor::populate()
+{
+        temperature = driver.readTemperature();
+        humidity    = driver.readHumidity();
+        pressure    = driver.readPressure();
+}

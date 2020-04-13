@@ -1,17 +1,10 @@
 # Road Surface Data Acquistion System
 
 ## TODO
+- [ ] implement camera, implement manual upload (database searches based on imageFileName)
+- [ ] implement recursive file search and upload
+- [ ] implement file removal after successful upload
 
-### Data Transfer Objects
-
-- [x] Implement Date
-- [x] Implement Time
-- [x] Implement Datetime
-- [x] Implement Acceleration
-- [x] Implement Impact
-  - [ ] Refactor Impact to accept an enum for impact-severity
-- [x] Implement Travel
-- [x] Implement Environment
 
 ### Actions
 
@@ -134,8 +127,7 @@ the hardware capabilities of the Raspberry Pi Zero W.
 
 The ESP32-WROOM-32D serves as the primary microcontroller of this system.
 Thus, it suppports the most connections to sensors.
-* The I2C interfaces with the LIS3DH accelerometer, GPS, and environmental
-sensor.
+* The I2C interfaces with the LIS3DH accelerometer, GPS, and environmental sensor.
 * The SPI interfaces with the SD card.
 
 | ESP32-WROOM-32D | LIS3DH | GPS | SD Card | Environmental |

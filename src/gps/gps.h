@@ -33,9 +33,16 @@
 
 #include "Arduino.h"
 #include "SparkFun_Ublox_Arduino_Library.h"
+#include "datetime.h"
+#include "location.h"
 
-#define NAVIGATION_FREQ             3     // GPS sampling frequency
+#define NAVIGATION_FREQ             3      // GPS sampling frequency
 #define GPS_VEHICLE_IS_MOVING_SPEED 1000   // units: mm/s
+#define GPS_NUM_CACHED_ITEMS        5
+#define SECOND_MILLIS               1000
+#define MINUTE_MILLIS               60000
+#define HOUR_MILLIS                 3600000
+#define DAY_MILLIS                  86400000
 
 /**
  * Specifies the data to be cached by the gps.
@@ -51,7 +58,8 @@ enum gps_cache {
         MONTH,
         DAY,
         HOUR,
-        MINUTE
+        MINUTE,
+        SECOND
 };
 
 /**
@@ -102,11 +110,27 @@ class GPS
                 void            read();
                 void            connect_to_satellites(long timeout = 0);
                 bool            is_connected_to_satellites();
-                enum            vehicle_state get_vehicle_state();
-                void            update_cache(gps_cache type);
-                gps_data        data;
+                enum vehicle_state get_vehicle_state();
+                void            update_cache(gps_cache type);  // TODO: change? remove?
+                gps_data        data; // TODO: remove
+
+                DateTime        datetime;
+                int32_t         vehicle_speed;
+                Location        location;
+                void            populate();
+
         private:
                 SFE_UBLOX_GPS   driver;
                 bool            cache_is_initialized = false;
                 void            _display_seconds_waiting();
+
+                void            __set_cache_update_timers();
+                void            __update_second();
+                void            __update_minute();
+                void            __update_hour();
+                void            __update_day_month_year();
+                void            __update_location();
+                void            __update_vehicle_speed();
+                bool            __cache_timers_set = false;
+                long            __cache_update_timer[GPS_NUM_CACHED_ITEMS];
 };

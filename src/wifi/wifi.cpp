@@ -24,7 +24,7 @@ WiFiManager::WiFiManager(char *ssid, char *psk)
 
 void WiFiManager::begin()
 {
-        // nothing to do here...
+
 }
 
 /**

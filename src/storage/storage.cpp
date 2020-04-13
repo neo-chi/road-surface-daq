@@ -28,6 +28,131 @@ void Storage::begin()
 }
 
 /**
+ * @interface Loggable
+ **/
+void Storage::write(Loggable *loggable)
+{
+        Serial.printf("storage: logging %s...", loggable->get_path());
+        mkdir(loggable->get_dir());
+        write(loggable->get_path(), loggable->get_log(), loggable->get_size());
+        loggable->reset();
+        Serial.println("complete!");
+}
+
+File Storage::get_uploadable_file(const char *dir)
+{
+        File ROOT = file_system.open(dir);
+        File next_file;
+        File directory;
+        while (next_file = ROOT.openNextFile()) {
+                if (!next_file.isDirectory() && _is_uploadable(next_file)) {
+                        return next_file;
+                }
+                if (next_file.isDirectory()) {
+                        directory = next_file;
+                        while (next_file = directory.openNextFile()) {
+                                if (_is_uploadable(next_file)) {
+                                        return next_file;
+                                }
+                        }
+                }
+        }
+}
+
+void Storage::get_uploadable_file(File *file, int level)
+{
+        File next_file;
+        File directory;
+        while (next_file = file->openNextFile()) {
+                Serial.println(next_file.name());
+                if (_is_uploadable(next_file)) {
+                        *file = next_file;
+                        return;
+                }
+                if (next_file.isDirectory()) {
+                        directory = next_file;
+                        while (next_file = directory.openNextFile()) {
+                                Serial.println(next_file.name());
+                                if (_is_uploadable(next_file)) {
+                                        *file = next_file;
+                                        return;
+                                }
+                        }
+                }
+        }
+}
+
+bool Storage::dir_has_uploadable_file(const char *dir)
+{
+        Serial.printf("searching directory %s\n", dir);
+        File directory {file_system.open(dir)};
+        while (File file = directory.openNextFile()) {
+                if (_is_uploadable(file))
+                        return true;
+        }
+
+}
+
+bool Storage::_is_uploadable(File file)
+{
+        // Serial.printf("storage: checking if %s is uploadable...", file.name());
+        const String filename  {file.name()};
+        const String extension {filename.substring(filename.lastIndexOf("."))};
+        if (extension == ".trv" || extension == ".TRv" || extension == ".tRv") {
+                // Serial.printf("complete! %s is uploadable\n", file.name());
+                // Serial.println("complete!");
+                return true;
+        } else if (extension == ".imp") {
+                // Serial.printf("complete! %s is uploadable\n", file.name());
+                // Serial.println("complete!");
+                return true;
+        } else {
+                // Serial.printf("complete! %s is NOT uploadable\n", file.name());
+                // Serial.println("complete!");
+                return false;
+        }
+}
+
+/**
+ * Appends the file extension ".up" to the file.
+ *
+ * @note files with this extension will be ignored when uploading.
+ **/
+void Storage::archive(File file)
+{
+        Serial.printf("storage: archiving %s...", file.name());
+        char *old_filename = (char*)malloc(64 * sizeof(char));
+        strcpy(old_filename, file.name());
+
+        char *new_filename = (char*)malloc(64 * sizeof(char));
+        strcpy(new_filename, old_filename);
+        strcat(new_filename, ".up");
+
+        file_system.rename(
+                file.name(),
+                new_filename
+        );
+        // Serial.printf("complete! %s -> %s\n", old_filename, new_filename);
+        Serial.println("complete!");
+
+}
+
+
+String Storage::ls(const char *dir) // TODO: pass a function to call on each file
+{
+        File _dir{file_system.open(dir)};
+        Serial.printf("DIR:  %s\n", _dir.name());
+        while (File file {_dir.openNextFile()}) {
+                if (file.isDirectory()) {
+                        ls(file.name());
+                } else {
+                        if (_is_uploadable(file));
+                                return file.name();
+                }
+        }
+}
+
+/**
  * Make a directory.
  *
  * @note include full path name in UNIX style (/dir/dir/...).
@@ -108,18 +233,11 @@ void IRAM_ATTR Storage::read(char *path)
 void Storage::rename(char *path_from, char *path_to)
 {
         Serial.printf("storage: renaming \"%s\" to \"%s\"...", path_from, path_to);
-        if (file_system.exists(path_from)) {
-                Serial.printf("found \"%s\"...", path_from);
-                if (!file_system.exists(path_to)) {
-                        Serial.printf("\"%s\" available...", path_to);
-                        if (file_system.rename(path_from, path_to))
-                                Serial.printf("complete!\n");
-                        else
-                                Serial.printf("failure!\n");
-                } else {
-                        Serial.printf("\"%s\" not available...failure!\n",
-                                      path_to);
-                }
+        if (file_system.exists(path_from) && !(file_system.exists(path_to))) {
+                if (file_system.rename(path_from, path_to))
+                        Serial.printf("complete!\n");
+                else
+                        Serial.printf("failure!\n");
         } else {
                 Serial.printf("%s not found...failure!", path_from);
         }
@@ -130,7 +248,7 @@ void Storage::rename(char *path_from, char *path_to)
  *
  * @note include full path in UNIX style.
  **/
-void IRAM_ATTR Storage::rm(char *path)
+void Storage::rm(char *path)
 {
         Serial.printf("storage: removing file at \"%s\"...", path);
         if (file_system.exists(path)) {
@@ -240,4 +358,9 @@ void IRAM_ATTR Storage::write(char *path, uint8_t *buf, size_t bytes_to_write)
         }
         Serial.printf("file write to \"%s\" complete!\n", path);
         file.close();
+}
+
+void IRAM_ATTR Storage::write(char *path, char *buf, size_t bytes_to_write)
+{
+       write(path, (uint8_t*)buf, bytes_to_write);
 }
