@@ -5,6 +5,7 @@
  * @since	2019-03-26
  * @see		https://github.com/reecechimento/road-surface-daq
 /******************************************************************************/
+
 #include "gps.h"
 #include "Wire.h"
 
@@ -62,7 +63,8 @@ void IRAM_ATTR GPS::connect_to_satellites(long timeout)
         }
 
         if (timeout != DEFAULT_TIMEOUT) {
-                /* DEBUG */     Serial.printf("gps: waiting %d milliseconds for satellite connection...\n", timeout);//FIXME: move to debugger
+                /* DEBUG */     Serial.println("gps: waiting until satellite connection is received...");//FIXME: move to debugger
+                // /* DEBUG */     Serial.printf("gps: waiting %d milliseconds for satellite connection...\n", timeout);//FIXME: move to debugger
                 while (millis() - elapsed_time < timeout
                        && !this->is_connected_to_satellites()) {
                         _display_seconds_waiting();
@@ -105,17 +107,16 @@ bool IRAM_ATTR GPS::is_connected_to_satellites()
  **/
 vehicle_state GPS::get_vehicle_state()
 {
-        /* DEBUG */     Serial.print("gps: checking vehicle movement state...");//FIXME: move to debugger
         if (this->is_connected_to_satellites()) {
                 if (_driver.getGroundSpeed() > GPS_VEHICLE_IS_MOVING_SPEED) {
-                        /* DEBUG */     Serial.println("vehicle is moving!");//FIXME: move to debugger
+                        Serial.println("vehicle state: MOVING");
                         return MOVING;
                 } else {
-                        /* DEBUG */     Serial.println("vehicle is idle!");//FIXME: move to debugger
+                        Serial.println("vehicle state: IDLE");
                         return IDLE;
                 }
         } else {
-                /* DEBUG */     Serial.println("no GPS satellite connection...vehicle state unknown!");//FIXME: move to debugger
+                Serial.println("vehicle state: UNKNOWN");
                 return UNKNOWN;
         }
 }
@@ -203,7 +204,9 @@ void IRAM_ATTR GPS::_update_location()
         );
 }
 
-// TODO: description
+/**
+ * Reads the GPS vehicle speed.
+ **/
 void IRAM_ATTR GPS::_update_vehicle_speed()
 {
         vehicle_speed = _driver.getGroundSpeed();

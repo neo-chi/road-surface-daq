@@ -20,6 +20,7 @@
  * driver library by Adafruit, "Adafruit_LIS3DH" is used to in this
  * initial implementation.
 *******************************************************************************/
+
 #pragma once
 
 #include "Arduino.h"

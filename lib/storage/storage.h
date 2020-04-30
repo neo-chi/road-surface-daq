@@ -15,6 +15,9 @@
 #include "parser.h"
 #include "http_client_uploadable.h"
 
+#define SIZE_READ_BUFFER 2048
+#define SIZE_CHAR_ARRAY  16
+
 class Storage
 {
         public:
@@ -22,9 +25,7 @@ class Storage
                 void   begin();
                 void   write(Loggable *loggable);
                 File   get_uploadable_file(const char *dir = "/");
-                void   get_uploadable_file(File *file, int level);
                 bool   dir_has_uploadable_file(const char *dir);
-                String ls(const char *dir = "/");
                 void   archive(File file);
         private:
                 bool  _is_uploadable(File file);
@@ -34,7 +35,6 @@ class Storage
                 void  rm(char *path);
                 void  rmdir(char *path);
                 void  read(char *path);
-                //char  **read(char *path); // TODO: remove me
                 void  write(char *path, char *message);
                 void  write(char *path, uint8_t *buf, size_t bytes_to_write);
                 void  write(char *path, char *buf, size_t bytes_to_write);

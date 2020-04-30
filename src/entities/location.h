@@ -1,3 +1,17 @@
+/*******************************************************************************
+ * @file	location.h
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-04-10
+ * @see		https://github.com/reecechimento/road-surface-daq
+ *
+ * Encapsulate gps location data:
+ *      - latitude
+ *      - longitude
+ * Print location data in csv format:
+ *      "latitude, longitude"
+*******************************************************************************/
+
 #pragma once
 
 #include "Arduino.h"

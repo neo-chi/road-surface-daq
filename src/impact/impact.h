@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * @file	impact.h
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-04-09
+ * @see		https://github.com/reecechimento/road-surface-daq
+ *
+ * Encapsulates acceleration, date, time, environment, and gps location data.
+*******************************************************************************/
+
 #pragma once
 
 #include "Arduino.h"

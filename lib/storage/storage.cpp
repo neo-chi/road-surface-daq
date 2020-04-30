@@ -4,10 +4,8 @@
  * @version	1.0
  * @since	2019-03-24
  * @see		https://github.com/reecechimento/road-surface-daq
-/******************************************************************************/
+*******************************************************************************/
 #include "storage.h"
-#define SIZE_READ_BUFFER 2048
-#define SIZE_CHAR_ARRAY  16
 
 /**
  * Storage Constructor
@@ -29,6 +27,8 @@ void Storage::begin()
 
 /**
  * @interface Loggable
+ *
+ * Writes a loggable object's data to local storage.
  **/
 void Storage::write(Loggable *loggable)
 {
@@ -50,12 +50,25 @@ void Storage::archive(File file)
         String new_filename{file.name()};
         new_filename.concat(".up");
         Serial.printf("", file.name());
-        Serial.printf("storage: archiving %s -> %s...", old_filename.c_str(), new_filename.c_str());
+        Serial.printf(
+                "storage: archiving %s -> %s...",
+                old_filename.c_str(),
+                new_filename.c_str()
+        );
         file_system.rename(old_filename, new_filename);
         Serial.println("complete!");
 
 }
 
+/**
+ * Searches 1-level depth directories and returns the first uploadable file.
+ *
+ * @note uploadable files have the extension ".trv" or ".imp"
+ *
+ * @param dir - root directory - default "/"
+ *
+ * @returns uploadable file
+ **/
 File Storage::get_uploadable_file(const char *dir)
 {
         File ROOT = file_system.open(dir);
@@ -76,38 +89,23 @@ File Storage::get_uploadable_file(const char *dir)
         }
 }
 
+/**
+ * Returns true if the file has the extension ".trv" or ".imp".
+ *
+ * @param File - to check for uploadability
+ *
+ * @returns true if file is uploadable
+ **/
 bool Storage::_is_uploadable(File file)
 {
-        // Serial.printf("\nstorage: checking if %s is uploadable...\n", file.name());
         const String filename  {file.name()};
         const String extension {filename.substring(filename.lastIndexOf("."))};
         if (extension == ".trv" || extension == ".TRv") {
-                // Serial.printf("complete! %s is uploadable\n", file.name());
-                // Serial.println("complete!");
                 return true;
         } else if (extension == ".imp" || extension == ".IMp") {
-                // Serial.printf("complete! %s is uploadable\n", file.name());
-                // Serial.println("complete!");
                 return true;
         } else {
-                // Serial.printf("complete! %s is NOT uploadable\n", file.name());
-                // Serial.println("complete!");
                 return false;
-        }
-}
-
-
-String Storage::ls(const char *dir) // TODO: pass a function to call on each file
-{
-        File _dir{file_system.open(dir)};
-        Serial.printf("DIR:  %s\n", _dir.name());
-        while (File file {_dir.openNextFile()}) {
-                if (file.isDirectory()) {
-                        ls(file.name());
-                } else {
-                        if (_is_uploadable(file));
-                                return file.name();
-                }
         }
 }
 

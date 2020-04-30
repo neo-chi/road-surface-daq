@@ -4,9 +4,6 @@
 #include "loggable.h"
 #include "uploadable.h"
 
-#define DEBUG         true
-#define DEBUG_VERBOSE 0
-
 #define ACC_PRE_IMPACT_LEN  400
 #define ACC_POST_IMPACT_LEN 800
 #define ACC_BUF_LEN ACC_PRE_IMPACT_LEN + ACC_POST_IMPACT_LEN

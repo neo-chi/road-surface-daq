@@ -5,6 +5,7 @@
  * @since	2019-03-25
  * @see		https://github.com/reecechimento/road-surface-daq
 *******************************************************************************/
+
 #include "accelerometer.h"
 
 /**
@@ -14,10 +15,11 @@
  **/
 Accelerometer::Accelerometer()
 {
+        // nothing to do here...
 }
 
 /**
- * Enables the accelerometer driver and configures this accelerometer.
+ * Enables and configures the accelerometer.
  **/
 void Accelerometer::begin() {
         Serial.printf("accelerometer: initializing...\n");
@@ -34,7 +36,7 @@ void Accelerometer::begin() {
  * @note PRE_IMPACT should be passed during regular operation.
  * @note POST_IMPACT should be passed on interrupt.
  *
- * @param buffer_to_write
+ * @param buffer_to_write - enumerator designating buffer space to write.
  **/
 void IRAM_ATTR Accelerometer::read(buffer buffer_to_write)
 {
@@ -67,7 +69,6 @@ void IRAM_ATTR Accelerometer::read(buffer buffer_to_write)
 void IRAM_ATTR Accelerometer::unlatch_interrupt()
 {
         Serial.print("accelerometer: unlatching interrupt...");
-        // Read the LIS3DH INT1SRC register. This unlatches the interrupt.
         Wire.beginTransmission(LIS3DH_DEFAULT_ADDRESS);
         Wire.write(LIS3DH_REG_INT1SRC);
         Wire.endTransmission();
@@ -213,8 +214,8 @@ void Accelerometer::_start_driver()
 }
 
 /**
- *  @param  reg register address
- *  @param  value value that will be written into selected register
+ *  @param reg - register address
+ *  @param value - value that will be written into selected register
  **/
 void Accelerometer::_write_register_8(int reg, int value) {
         Wire.beginTransmission(LIS3DH_DEFAULT_ADDRESS);

@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * @file	impact.cpp
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-04-10
+ * @see		https://github.com/reecechimento/road-surface-daq
+*******************************************************************************/
+
 #include "impact.h"
 
 // TODO: add description
@@ -8,8 +16,7 @@ Impact::Impact() : Loggable()
 
 /**
  * Writes the log data
- * {YYYY-MM-DD HH:MM:SS, latitude, longitude
- * to this object's buffer.
+ * YYYY-MM-DD HH:MM:SS, latitude, longitude to this object's buffer.
  **/
 void Impact::log()
 {

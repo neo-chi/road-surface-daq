@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * @file	environment.cpp
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-04-10
+ * @see		https://github.com/reecechimento/road-surface-daq
+*******************************************************************************/
+
 #include "environment.h"
 
 /**
@@ -10,20 +18,34 @@ Environment::Environment()
         // nothing to do here...
 }
 
+/**
+ * Default destructor
+ **/
 Environment::~Environment()
 {
         // nothing to do here...
 }
 
+/**
+ * Returns the character pointer "temperature,humidity,pressure".
+ **/
 char *Environment::to_string()
 {
-        char result[64];
-        sprintf(result, "%0.4f,%0.4f,%0.4f", *_temperature, *_humidity, *_pressure);
+        char *result{(char*)malloc(64 * sizeof(char))};
+        sprintf(
+                result,
+                "%0.4f,%0.4f,%0.4f",
+                *_temperature,
+                *_humidity,
+                *_pressure
+        );
         return result;
 }
 
-void Environment::set_environment(float temperature, float humidity, float pressure)
-{
+void Environment::set_environment(float temperature,
+        float humidity,
+        float pressure
+) {
         set_temperature(temperature);
         set_humidity(humidity);
         set_pressure(pressure);

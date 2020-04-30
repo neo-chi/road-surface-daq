@@ -4,10 +4,10 @@
 #include "date.h"
 #include "_time.h"
 
-#define LOGGABLE_LOG_SIZE_MAX      10240
-#define LOGGABLE_DIR_SIZE_MAX      64
-#define LOGGABLE_FILENAME_SIZE_MAX 64
-#define LOGGABLE_PATH_SIZE_MAX     192
+#define LOGGABLE_LOG_SIZE_MAX      10240 // 10 KB
+#define LOGGABLE_DIR_SIZE_MAX      64    // 64 B
+#define LOGGABLE_FILENAME_SIZE_MAX 64    // 64 B
+#define LOGGABLE_PATH_SIZE_MAX     192   // 192 B
 
 /**
  * The Loggable interfaces requires implementing classes to provide a method

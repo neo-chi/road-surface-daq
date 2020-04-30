@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * @file	impact_parser.cpp
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-04-10
+ * @see		https://github.com/reecechimento/road-surface-daq
+*******************************************************************************/
+
 #include "impact_parser.h"
 
 /**
@@ -18,6 +26,13 @@ ImpactParser::~ImpactParser()
         // nothing to do here...
 }
 
+/**
+ * Parse file for impact data.
+ *
+ * @param file - file to parse
+ *
+ * @returns uploadable interface
+ **/
 Uploadable *ImpactParser::parse_file(File file)
 {
         Serial.printf("impact_parser: parsing %s...", file.name());

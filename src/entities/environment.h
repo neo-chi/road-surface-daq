@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * @file	environment.h
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-04-10
+ * @see		https://github.com/reecechimento/road-surface-daq
+ *
+ * Encapsulate environmental sensor data:
+ *      - temperature
+ *      - humidity
+ *      - pressure
+ * Print environmental data in csv format:
+ *      "temperature,humidity,pressure"
+*******************************************************************************/
+
 #pragma once
 // TODO: file header here
 
