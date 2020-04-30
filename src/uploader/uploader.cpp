@@ -1,5 +1,19 @@
+/*******************************************************************************
+ * @file	uploader.cpp
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-04-10
+ * @see		https://github.com/reecechimento/road-surface-daq
+*******************************************************************************/
+
 #include "uploader.h"
 
+/**
+ * Establish a WiFi connection and begin uploading files from storage.
+ *
+ * @param wifi - WiFi driver object
+ * @param storage - data storage object
+ **/
 void Uploader::begin(Storage *storage, WiFiManager *wifi)
 {
         File file {storage->get_uploadable_file()};
@@ -13,14 +27,16 @@ void Uploader::begin(Storage *storage, WiFiManager *wifi)
         }
 
         if (wifi->is_connected()) {
-                delay(5000);
+                delay(5000);  // give WiFi time to recover...
                 Serial.printf("uploader: uploading %s...\n", file.name());
 
-                if (_extension_of(file) == ".trv" || _extension_of(file) == ".TRv") {
+                if (   _extension_of(file) == ".trv"
+                    || _extension_of(file) == ".TRv") {
                         if (travel_parser->parse_file(file)->upload())
                                 storage->archive(file);
 
-                } else if (_extension_of(file) == ".imp" || _extension_of(file) == ".IMp") {
+                } else if (   _extension_of(file) == ".imp"
+                           || _extension_of(file) == ".IMp") {
                         if (impact_parser->parse_file(file)->upload())
                                 storage->archive(file);
 

@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * @file	http_client_uploadable.cpp
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-04-09
+ * @see		https://github.com/reecechimento/road-surface-daq
+*******************************************************************************/
+
 #include "http_client_uploadable.h"
 
 HTTPClientUploadable::HTTPClientUploadable() : Uploadable()
@@ -10,6 +18,12 @@ HTTPClientUploadable::~HTTPClientUploadable()
         // nothing to do here...
 }
 
+
+/**
+ * Uploads all data stored in this uploadable object via HTTP POST.
+ *
+ * @returns bool - true if file upload is successful
+ **/
 bool HTTPClientUploadable::upload()
 {
         bool __return_val = false;

@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * @file	loggable.cpp
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-04-10
+ * @see		https://github.com/reecechimento/road-surface-daq
+*******************************************************************************/
+
 #include "loggable.h"
 
 void Loggable::_set_dir(Date date)

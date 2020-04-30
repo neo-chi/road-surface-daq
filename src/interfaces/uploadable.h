@@ -1,6 +1,6 @@
 #pragma once
 
-#include "HTTPClient.h"
+#include "Arduino.h"
 
 #define UPLOADABLE_MAX_UPLOADS 2000
 

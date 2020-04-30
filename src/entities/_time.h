@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * @file	_time.h
+ * @author	reece chimento
+ * @version	1.0
+ * @since	2019-04-10
+ * @see		https://github.com/reecechimento/road-surface-daq
+ *
+ * Encapsulates GPS time data and allows printing time in the form "HH:MM:SS".
+*******************************************************************************/
+
 #pragma once
 
 #include "Arduino.h"
