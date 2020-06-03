@@ -34,7 +34,7 @@ static Uploader            *uploader             = new Uploader;
 #define enable_interrupts()  sei()
 
 #define VEHICLE_STATE_UPDATE_TIME 500
-#define GPS_CONNECT_TIMEOUT       30000
+#define GPS_CONNECT_TIMEOUT       10000
 
 // User-defined configurations
 #define ACCELEROMETER_INT_PIN 17
@@ -73,7 +73,7 @@ void setup()
         setup_accelerometer_interrupt_on_pin(17);
 
         // Try to get a GPS connection before starting...
-        gps->connect_to_satellites(GPS_CONNECT_TIMEOUT);
+        //gps->connect_to_satellites(GPS_CONNECT_TIMEOUT);
 
         /*
          * Now that the devices are setup, interrupts may be handled properly
